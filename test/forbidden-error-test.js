@@ -3,12 +3,12 @@
 const {assert} = require('kixx-assert');
 const {EOL} = require('os');
 
-const ErrorClass = require('../lib/conflict-error');
+const ErrorClass = require('../lib/forbidden-error');
 
-const ERROR_NAME = 'ConflictError';
-const ERROR_CODE = 'CONFLICT_ERROR';
-const ERROR_TITLE = 'Conflict';
-const ERROR_STATUS_CODE = 409;
+const ERROR_NAME = 'ForbiddenError';
+const ERROR_CODE = 'FORBIDDEN_ERROR';
+const ERROR_TITLE = 'Forbidden';
+const ERROR_STATUS_CODE = 403;
 
 module.exports = function (t) {
 	t.it('should be an instance of an Error', () => {
@@ -57,6 +57,6 @@ module.exports = function (t) {
 		const err = new ErrorClass('Foo bar baz.');
 		const firstLines = err.stack.split(EOL).slice(0, 2);
 		assert.isEqual(`${ERROR_NAME}: Foo bar baz.`, firstLines[0]);
-		assert.isOk(firstLines[1].includes('test/conflict-error-test.js:'));
+		assert.isOk(firstLines[1].includes('test/forbidden-error-test.js:'));
 	});
 };

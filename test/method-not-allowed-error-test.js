@@ -1,14 +1,16 @@
 'use strict';
 
-const {assert} = require('kixx-assert');
+const {assert, helpers} = require('kixx-assert');
 const {EOL} = require('os');
 
-const ErrorClass = require('../lib/conflict-error');
+const ErrorClass = require('../lib/method-not-allowed-error');
 
-const ERROR_NAME = 'ConflictError';
-const ERROR_CODE = 'CONFLICT_ERROR';
-const ERROR_TITLE = 'Conflict';
-const ERROR_STATUS_CODE = 409;
+const ERROR_NAME = 'MethodNotAllowedError';
+const ERROR_CODE = 'METHOD_NOT_ALLOWED_ERROR';
+const ERROR_TITLE = 'Method Not Allowed';
+const ERROR_STATUS_CODE = 405;
+
+const {isObject, isEmpty} = helpers;
 
 module.exports = function (t) {
 	t.it('should be an instance of an Error', () => {
@@ -53,10 +55,17 @@ module.exports = function (t) {
 		assert.isEqual('Foo bar baz.', err.detail);
 	});
 
+	t.it('should assign the given headers', () => {
+		const undef = new ErrorClass('Foo bar baz.');
+		const err = new ErrorClass('Foo bar baz.', {headers: {Allowed: 'GET'}});
+		assert.isOk(isObject(undef.headers) && isEmpty(undef.headers));
+		assert.isEqual('GET', err.headers.Allowed);
+	});
+
 	t.it('should have a full stack trace', () => {
 		const err = new ErrorClass('Foo bar baz.');
 		const firstLines = err.stack.split(EOL).slice(0, 2);
 		assert.isEqual(`${ERROR_NAME}: Foo bar baz.`, firstLines[0]);
-		assert.isOk(firstLines[1].includes('test/conflict-error-test.js:'));
+		assert.isOk(firstLines[1].includes('test/method-not-allowed-error-test.js:'));
 	});
 };

@@ -48,6 +48,11 @@ module.exports = function (t) {
 		assert.isEqual('Foo bar baz.', err.message);
 	});
 
+	t.it('should have correct detail', () => {
+		const err = new ErrorClass('Foo bar baz.');
+		assert.isEqual('Foo bar baz.', err.detail);
+	});
+
 	t.it('should have a full stack trace', () => {
 		const err = new ErrorClass('Foo bar baz.');
 		const firstLines = err.stack.split(EOL).slice(0, 2);
