@@ -3,12 +3,12 @@
 const {assert} = require('kixx-assert');
 const {EOL} = require('os');
 
-const ErrorClass = require('../lib/bad-request-error');
+const ErrorClass = require('../lib/conflict-error');
 
-const ERROR_NAME = 'BadRequestError';
-const ERROR_CODE = 'BAD_REQUEST_ERROR';
-const ERROR_TITLE = 'Bad Request';
-const ERROR_STATUS_CODE = 400;
+const ERROR_NAME = 'ConflictError';
+const ERROR_CODE = 'CONFLICT_ERROR';
+const ERROR_TITLE = 'Conflict';
+const ERROR_STATUS_CODE = 409;
 
 module.exports = function (t) {
 	t.it('should be an instance of an Error', () => {
@@ -52,14 +52,6 @@ module.exports = function (t) {
 		const err = new ErrorClass('Foo bar baz.');
 		const firstLines = err.stack.split(EOL).slice(0, 2);
 		assert.isEqual(`${ERROR_NAME}: Foo bar baz.`, firstLines[0]);
-		assert.isOk(firstLines[1].includes('test/bad-request-error-test.js:'));
-	});
-
-	t.it('assigns the given parameter', () => {
-		const undef = new ErrorClass('Foo bar baz.');
-		const err = new ErrorClass('Foo bar baz.', {parameter: 'foobarbaz'});
-
-		assert.isEqual('undefined', typeof undef.parameter);
-		assert.isEqual('foobarbaz', err.parameter);
+		assert.isOk(firstLines[1].includes('test/conflict-error-test.js:'));
 	});
 };
