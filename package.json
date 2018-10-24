@@ -1,5 +1,5 @@
 {
-  "name": "kixx-errors",
+  "name": "kixx-server-errors",
   "version": "1.0.0",
   "description": "Common use case ECMAScript error classes",
   "main": "index.js",
@@ -11,14 +11,14 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kixxauth/kixx-errors.git"
+    "url": "git+https://github.com/kixxauth/kixx-server-errors.git"
   },
   "bugs": {
-    "url": "https://github.com/kixxauth/kixx-errors/issues"
+    "url": "https://github.com/kixxauth/kixx-server-errors/issues"
   },
-  "homepage": "https://github.com/kixxauth/kixx-errors#readme",
+  "homepage": "https://github.com/kixxauth/kixx-server-errors#readme",
   "devDependencies": {
-    "eslint": "5.6.1",
+    "eslint": "5.7.0",
     "kixx-assert": "1.0.5",
     "kixx-test-node": "1.2.5"
   }
