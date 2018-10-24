@@ -144,7 +144,6 @@ module.exports = function (t) {
 			const err = new ErrorClass('Final');
 			assert.isEqual(false, err.includesErrorCode('FOOBAR'));
 		});
-
 	});
 
 	t.describe('#getOperationalError()', (t) => {
