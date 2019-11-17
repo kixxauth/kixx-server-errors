@@ -1,6 +1,6 @@
 {
   "name": "kixx-server-errors",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Common use case ECMAScript error classes",
   "main": "index.js",
   "scripts": {
@@ -18,8 +18,8 @@
   },
   "homepage": "https://github.com/kixxauth/kixx-server-errors#readme",
   "devDependencies": {
-    "eslint": "5.7.0",
+    "eslint": "6.6.0",
     "kixx-assert": "1.0.5",
-    "kixx-test-node": "1.2.5"
+    "kixx-test-node": "1.4.1"
   }
 }
