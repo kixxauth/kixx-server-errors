@@ -1,6 +1,6 @@
 {
   "name": "kixx-server-errors",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Common use case ECMAScript error classes",
   "main": "index.js",
   "scripts": {
