@@ -18,8 +18,8 @@
   },
   "homepage": "https://github.com/kixxauth/kixx-server-errors#readme",
   "devDependencies": {
-    "eslint": "6.6.0",
-    "kixx-assert": "1.0.5",
+    "eslint": "6.8.0",
+    "kixx-assert": "1.0.6",
     "kixx-test-node": "1.4.1"
   }
 }
