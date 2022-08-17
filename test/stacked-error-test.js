@@ -152,7 +152,7 @@ module.exports = function (t) {
 	});
 
 	t.describe('#getOperationalError()', (t) => {
-		t.it('finds the first error with a status code', () => {
+		t.it('finds the first error with a code', () => {
 			const err1 = new Error('The root cause');
 			const err2 = new ConflictError('A conflict error');
 			const err3 = new ErrorClass('Intermediate error', [err1, err2]);

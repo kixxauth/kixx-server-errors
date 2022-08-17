@@ -117,11 +117,11 @@ module.exports = function (t) {
 		});
 
 		t.describe('without proxy', (t) => {
-			t.it('finds the first error with a status code', () => {
+			t.it('finds the first error with a code', () => {
 				const err1 = {};
-				const err2 = {statusCode: 100};
-				const err3 = {statusCode: 200};
-				const finalErr = {statusCode: 300, errors: [err3, err2, err1]};
+				const err2 = {code: 'ERRCODE'};
+				const err3 = {code: 'ERRCODE'};
+				const finalErr = {code: 'ERRCODE', errors: [err3, err2, err1]};
 
 				assert.isEqual(err2, getOperationalError(finalErr));
 			});

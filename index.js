@@ -74,7 +74,7 @@ function getOperationalError(err) {
 
 	for (let i = errors.length - 1; i >= 0; i--) {
 		const e = errors[i];
-		if (e && Number.isInteger(e.statusCode)) {
+		if (e && (typeof e.code === 'string' || typeof e.code === 'number')) {
 			return e;
 		}
 	}
