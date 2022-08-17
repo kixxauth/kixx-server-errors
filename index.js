@@ -83,3 +83,23 @@ function getOperationalError(err) {
 	return err;
 }
 exports.getOperationalError = getOperationalError;
+
+function getHttpError(err) {
+	let errors = [err];
+	if (Array.isArray(err)) {
+		errors = err;
+	}
+	if (Array.isArray(err.errors)) {
+		errors = errors.concat(err.errors);
+	}
+
+	for (let i = errors.length - 1; i >= 0; i--) {
+		const e = errors[i];
+		if (e && e.statusCode) {
+			return e;
+		}
+	}
+
+	return null;
+}
+exports.getHttpError = getHttpError;

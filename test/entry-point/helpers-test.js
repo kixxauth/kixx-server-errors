@@ -5,7 +5,8 @@ const {assert} = require('kixx-assert');
 const {
 	getFullStack,
 	includesErrorCode,
-	getOperationalError
+	getOperationalError,
+	getHttpError
 } = require('../../index');
 
 module.exports = function (t) {
@@ -132,6 +133,24 @@ module.exports = function (t) {
 
 				assert.isEqual(finalErr, getOperationalError(finalErr));
 			});
+		});
+	});
+
+	t.describe('getHttpError()', (t) => {
+		t.it('finds the first error with a status code', () => {
+			const err1 = {};
+			const err2 = {statusCode: 400};
+			const err3 = {statusCode: 500};
+			const finalErr = {statusCode: 403, errors: [err3, err2, err1]};
+
+			assert.isEqual(err2, getHttpError(finalErr));
+		});
+
+		t.it('returns null if no nested operational error', () => {
+			const err1 = {};
+			const finalErr = {errors: [err1]};
+
+			assert.isEqual(null, getHttpError(finalErr));
 		});
 	});
 };
