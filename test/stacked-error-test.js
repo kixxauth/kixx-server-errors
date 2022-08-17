@@ -89,6 +89,11 @@ module.exports = function (t) {
 		assert.isEqual('Final', finalErr.detail);
 	});
 
+	t.it('has empty error history prop with null root error', () => {
+		const err = new ErrorClass('Foo bar baz', null);
+		assert.isEqual(0, err.errors.length);
+	});
+
 	t.describe('#getFullStack()', (t) => {
 		t.it('can compose the underlying stack trace', () => {
 			const err1 = new Error('The root cause');
@@ -116,9 +121,9 @@ module.exports = function (t) {
 			assert.isEqual('Error: The root cause', headers[2]);
 
 			// process.stdout.write(`\nline[0]: ${stackLines[0]}\n`);
-			assert.isOk(stackLines[0].includes('test/stacked-error-test.js:96'));
-			assert.isOk(stackLines[1].includes('test/stacked-error-test.js:95'));
-			assert.isOk(stackLines[2].includes('test/stacked-error-test.js:94'));
+			assert.isOk(stackLines[0].includes('test/stacked-error-test.js:101'));
+			assert.isOk(stackLines[1].includes('test/stacked-error-test.js:100'));
+			assert.isOk(stackLines[2].includes('test/stacked-error-test.js:99'));
 		});
 	});
 
