@@ -3,6 +3,7 @@
 const BadRequestError = require('./lib/bad-request-error');
 const ConflictError = require('./lib/conflict-error');
 const ForbiddenError = require('./lib/forbidden-error');
+const JsonParsingError = require('./lib/json-parsing-error');
 const MethodNotAllowedError = require('./lib/method-not-allowed-error');
 const NotAcceptableError = require('./lib/not-acceptable-error');
 const NotFoundError = require('./lib/not-found-error');
@@ -17,6 +18,7 @@ const ValidationError = require('./lib/validation-error');
 exports.BadRequestError = BadRequestError;
 exports.ConflictError = ConflictError;
 exports.ForbiddenError = ForbiddenError;
+exports.JsonParsingError = JsonParsingError;
 exports.MethodNotAllowedError = MethodNotAllowedError;
 exports.NotAcceptableError = NotAcceptableError;
 exports.NotFoundError = NotFoundError;

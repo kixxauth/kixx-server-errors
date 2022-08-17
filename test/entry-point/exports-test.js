@@ -7,6 +7,7 @@ module.exports = function (t) {
 		BadRequestError: 'bad-request-error',
 		ConflictError: 'conflict-error',
 		ForbiddenError: 'forbidden-error',
+		JsonParsingError: 'json-parsing-error',
 		MethodNotAllowedError: 'method-not-allowed-error',
 		NotAcceptableError: 'not-acceptable-error',
 		NotFoundError: 'not-found-error',
