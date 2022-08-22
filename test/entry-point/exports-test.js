@@ -1,8 +1,8 @@
 'use strict';
 
-const {assert} = require('kixx-assert');
+const { assert } = require('kixx-assert');
 
-module.exports = function (t) {
+module.exports = function runTests(t) {
 	const EXPECTED_ERRORS = Object.freeze({
 		BadRequestError: 'bad-request-error',
 		ConflictError: 'conflict-error',
@@ -12,12 +12,13 @@ module.exports = function (t) {
 		NotAcceptableError: 'not-acceptable-error',
 		NotFoundError: 'not-found-error',
 		NotImplementedError: 'not-implemented-error',
+		OperationalError: 'operational-error',
 		StackedError: 'stacked-error',
 		UnauthorizedError: 'unauthorized-error',
 		UnprocessableError: 'unprocessable-error',
 		UnsupportedMediaTypeError: 'unsupported-media-type-error',
 		UserError: 'user-error',
-		ValidationError: 'validation-error'
+		ValidationError: 'validation-error',
 	});
 
 	const INDEX_EXPORTS = Object.freeze(Object.assign(
@@ -28,10 +29,10 @@ module.exports = function (t) {
 	const BASE_ERRORS_LIB_PATH = '../../lib';
 
 	t.it('should export all expected Error classes', () => {
-		Object.entries(EXPECTED_ERRORS).forEach(([className, fileName]) => {
-			const ActualErrorClass = require(`${BASE_ERRORS_LIB_PATH}/${fileName}`);
+		Object.entries(EXPECTED_ERRORS).forEach(([ className, fileName ]) => {
+			const ActualErrorClass = require(`${ BASE_ERRORS_LIB_PATH }/${ fileName }`);
 			const IndexReference = INDEX_EXPORTS[className];
-			assert.isEqual(ActualErrorClass, IndexReference, `IndexReference for ${className}`);
+			assert.isEqual(ActualErrorClass, IndexReference, `IndexReference for ${ className }`);
 		});
 	});
 };

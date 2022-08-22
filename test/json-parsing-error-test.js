@@ -1,80 +1,100 @@
 'use strict';
 
-const {assert} = require('kixx-assert');
-const {EOL} = require('os');
+const { assert } = require('kixx-assert');
+const { EOL } = require('os');
 
 const ErrorClass = require('../lib/json-parsing-error');
 
 const ERROR_NAME = 'JsonParsingError';
 const ERROR_CODE = 'JSON_PARSING_ERROR';
+const ERROR_TITLE = 'JSON Parsing Error';
 
-function getNativeJsonParsingError() {
-	try {
-		JSON.parse('{');
-	} catch (err) {
-		return err;
-	}
-}
-
-const jerr = getNativeJsonParsingError();
-
-module.exports = function (t) {
+module.exports = function runTest(t) {
 	t.it('should be an instance of an Error', () => {
-		const err = new ErrorClass('Foo bar baz');
+		const err = new ErrorClass('Foo bar baz.');
+		assert.isOk(err instanceof Error);
+	});
+
+	t.it('should be an instance of a StackedError', () => {
+		const err = new ErrorClass('Foo bar baz.');
 		assert.isOk(err instanceof Error);
 	});
 
 	t.it('should have correct name', () => {
-		const err = new ErrorClass('Foo bar baz');
+		const err = new ErrorClass('Foo bar baz.');
 		assert.isNonEmptyString(ERROR_NAME);
 		assert.isEqual(ERROR_NAME, ErrorClass.NAME);
 		assert.isEqual(ErrorClass.NAME, err.name);
 	});
 
-	t.it('should have correct code', () => {
-		const err = new ErrorClass('Foo bar baz');
+	t.it('should have default code when none provided', () => {
+		const err = new ErrorClass('Foo bar baz.');
 		assert.isNonEmptyString(ERROR_CODE);
 		assert.isEqual(ERROR_CODE, ErrorClass.CODE);
 		assert.isEqual(ErrorClass.CODE, err.code);
 	});
 
-	t.it('should have correct message', () => {
+	t.it('should have code when provided', () => {
+		const err = new ErrorClass('Foo bar baz.', { code: 1234 });
+		assert.isEqual(1234, err.code);
+	});
+
+	t.it('should use err.code when code is NOT provided', () => {
+		const firstError = new Error('Root error');
+		firstError.code = 'fu';
+		const err = new ErrorClass('Foo bar baz.', { err: firstError });
+		assert.isEqual('fu', err.code);
+	});
+
+	t.it('should have correct title', () => {
+		const err = new ErrorClass('Foo bar baz.');
+		assert.isNonEmptyString(ERROR_TITLE);
+		assert.isEqual(ERROR_TITLE, ErrorClass.TITLE);
+		assert.isEqual(ErrorClass.TITLE, err.title);
+	});
+
+	t.it('should have correct statusCode', () => {
+		const err = new ErrorClass('Foo bar baz.');
+		assert.isUndefined(err.statusCode);
+	});
+
+	t.it('should have correct message with NO root errors', () => {
+		const err = new ErrorClass('Foo bar baz.');
+		assert.isEqual('Foo bar baz.', err.message);
+	});
+
+	t.it('should have correct message WITH root errors', () => {
+		const firstError = new Error('Foo');
+		const secondError = new ErrorClass('Bar', { err: firstError });
+		const err = new ErrorClass('Baz', { err: secondError });
+		assert.isEqual('Baz: Bar: Foo', err.message);
+	});
+
+	t.it('should have correct detail with NO root errors', () => {
 		const err = new ErrorClass('Foo bar baz');
-		assert.isEqual('Foo bar baz', err.message);
+		assert.isEqual(`${ ERROR_NAME }: Foo bar baz`, err.detail);
 	});
 
-	t.it('should include root error message', () => {
-		const err = new ErrorClass('Foo bar baz', jerr);
-		assert.isEqual('Foo bar baz: Unexpected end of JSON input', err.message);
+	t.it('should have correct detail WITH root errors', () => {
+		const firstError = new Error('Foo');
+		const secondError = new ErrorClass('Bar', { err: firstError });
+		const err = new ErrorClass('Baz', { err: secondError });
+		assert.isEqual(`${ ERROR_NAME }: Baz: Bar: Foo >> ${ ERROR_NAME }: Bar: Foo >> Error: Foo`, err.detail);
 	});
 
-	t.it('should have empty errors list when root error is NOT provided', () => {
-		const err = new ErrorClass('Foo bar baz');
-		assert.isEqual(0, err.errors.length);
+	t.it('should have location when provided', () => {
+		const err = new ErrorClass('Foo bar baz', { location: 'some:component:location' });
+		assert.isEqual('some:component:location', err.location);
 	});
 
-	t.it('should include root error in error list', () => {
-		const err = new ErrorClass('Foo bar baz', jerr);
-		assert.isEqual(1, err.errors.length);
-		assert.isEqual(jerr, err.errors[0]);
-	});
+	t.it('should have a stack trace', () => {
+		const firstError = new Error('Foo');
+		const secondError = new ErrorClass('Bar', { err: firstError });
+		const err = new ErrorClass('Baz', { err: secondError });
 
-	t.it('should have a full stack trace', () => {
-		const err = new ErrorClass('Foo bar baz');
 		const firstLines = err.stack.split(EOL).slice(0, 2);
-		assert.isEqual(`${ERROR_NAME}: Foo bar baz`, firstLines[0]);
+
+		assert.isEqual(`${ ERROR_NAME }: Baz: Bar: Foo`, firstLines[0]);
 		assert.isOk(firstLines[1].includes('test/json-parsing-error-test.js:'));
-	});
-
-	t.it('should have configurable stack trace', () => {
-		function insideFunction() {
-			const err = new ErrorClass('Foo bar baz', jerr, insideFunction);
-			const firstLines = err.stack.split(EOL).slice(0, 2);
-			assert.isEqual(`${ERROR_NAME}: Foo bar baz: Unexpected end of JSON input`, firstLines[0]);
-			assert.isOk(firstLines[1].includes('test/json-parsing-error-test.js:'));
-			assert.isNotOk(firstLines[1].includes('at insideFunction'));
-		}
-
-		insideFunction();
 	});
 };

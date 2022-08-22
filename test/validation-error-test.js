@@ -1,16 +1,22 @@
 'use strict';
 
-const {assert} = require('kixx-assert');
-const {EOL} = require('os');
+const { assert } = require('kixx-assert');
+const { EOL } = require('os');
 
 const ErrorClass = require('../lib/validation-error');
-const UnprocessableError = require('../lib/unprocessable-error');
 
 const ERROR_NAME = 'ValidationError';
 const ERROR_CODE = 'VALIDATION_ERROR_CONTAINER';
+const ERROR_TITLE = 'Validation Error';
+const ERROR_STATUS_CODE = 400;
 
-module.exports = function (t) {
+module.exports = function runTest(t) {
 	t.it('should be an instance of an Error', () => {
+		const err = new ErrorClass('Foo bar baz.');
+		assert.isOk(err instanceof Error);
+	});
+
+	t.it('should be an instance of a StackedError', () => {
 		const err = new ErrorClass('Foo bar baz.');
 		assert.isOk(err instanceof Error);
 	});
@@ -22,48 +28,75 @@ module.exports = function (t) {
 		assert.isEqual(ErrorClass.NAME, err.name);
 	});
 
-	t.it('should have correct code', () => {
+	t.it('should have default code when none provided', () => {
 		const err = new ErrorClass('Foo bar baz.');
 		assert.isNonEmptyString(ERROR_CODE);
 		assert.isEqual(ERROR_CODE, ErrorClass.CODE);
 		assert.isEqual(ErrorClass.CODE, err.code);
 	});
 
-	t.it('should have correct message', () => {
-		const err = new ErrorClass('Foo bar baz.');
-		assert.isEqual('List of validation errors', err.message);
+	t.it('should have code when provided', () => {
+		const err = new ErrorClass('Foo bar baz.', { code: 1234 });
+		assert.isEqual(1234, err.code);
 	});
 
-	t.it('should have a full stack trace', () => {
+	t.it('should use err.code when code is NOT provided', () => {
+		const firstError = new Error('Root error');
+		firstError.code = 'fu';
+		const err = new ErrorClass('Foo bar baz.', { err: firstError });
+		assert.isEqual('fu', err.code);
+	});
+
+	t.it('should have correct title', () => {
 		const err = new ErrorClass('Foo bar baz.');
+		assert.isNonEmptyString(ERROR_TITLE);
+		assert.isEqual(ERROR_TITLE, ErrorClass.TITLE);
+		assert.isEqual(ErrorClass.TITLE, err.title);
+	});
+
+	t.it('should have correct statusCode', () => {
+		const err = new ErrorClass('Foo bar baz.');
+		assert.isEqual(ERROR_STATUS_CODE, ErrorClass.STATUS_CODE);
+		assert.isEqual(ErrorClass.STATUS_CODE, err.statusCode);
+	});
+
+	t.it('should have correct message with NO root errors', () => {
+		const err = new ErrorClass('Foo bar baz.');
+		assert.isEqual('Foo bar baz.', err.message);
+	});
+
+	t.it('should have correct message WITH root errors', () => {
+		const firstError = new Error('Foo');
+		const secondError = new ErrorClass('Bar', { err: firstError });
+		const err = new ErrorClass('Baz', { err: secondError });
+		assert.isEqual('Baz: Bar: Foo', err.message);
+	});
+
+	t.it('should have correct detail with NO root errors', () => {
+		const err = new ErrorClass('Foo bar baz');
+		assert.isEqual(`${ ERROR_NAME }: Foo bar baz`, err.detail);
+	});
+
+	t.it('should have correct detail WITH root errors', () => {
+		const firstError = new Error('Foo');
+		const secondError = new ErrorClass('Bar', { err: firstError });
+		const err = new ErrorClass('Baz', { err: secondError });
+		assert.isEqual(`${ ERROR_NAME }: Baz: Bar: Foo >> ${ ERROR_NAME }: Bar: Foo >> Error: Foo`, err.detail);
+	});
+
+	t.it('should have location when provided', () => {
+		const err = new ErrorClass('Foo bar baz', { location: 'some:component:location' });
+		assert.isEqual('some:component:location', err.location);
+	});
+
+	t.it('should have a stack trace', () => {
+		const firstError = new Error('Foo');
+		const secondError = new ErrorClass('Bar', { err: firstError });
+		const err = new ErrorClass('Baz', { err: secondError });
+
 		const firstLines = err.stack.split(EOL).slice(0, 2);
-		assert.isEqual(`${ERROR_NAME}: List of validation errors`, firstLines[0]);
+
+		assert.isEqual(`${ ERROR_NAME }: Baz: Bar: Foo`, firstLines[0]);
 		assert.isOk(firstLines[1].includes('test/validation-error-test.js:'));
-	});
-
-	t.it('pushes and checks UnprocessableErrors', () => {
-		const err = new ErrorClass();
-
-		assert.isEqual(null, err.withErrorsOrNull());
-
-		err.push('Invalid username', 'username');
-		err.push('Invalid password', 'password');
-
-		assert.isEqual(err, err.withErrorsOrNull());
-
-		const err1 = err.errors[0];
-		const err2 = err.errors[1];
-
-		assert.isEqual(UnprocessableError.NAME, err1.name);
-		assert.isEqual(UnprocessableError.NAME, err2.name);
-
-		assert.isEqual(UnprocessableError.CODE, err1.code);
-		assert.isEqual(UnprocessableError.CODE, err2.code);
-
-		assert.isEqual('Invalid username', err1.detail);
-		assert.isEqual('Invalid password', err2.detail);
-
-		assert.isEqual('username', err1.pointer);
-		assert.isEqual('password', err2.pointer);
 	});
 };
