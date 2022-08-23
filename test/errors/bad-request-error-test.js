@@ -82,6 +82,13 @@ module.exports = function runTest(t) {
 		assert.isEqual(`${ ERROR_NAME }: Baz: Bar: Foo >> ${ ERROR_NAME }: Bar: Foo >> Error: Foo`, err.detail);
 	});
 
+	t.it('should have correct "fatal" flag', () => {
+		let err = new ErrorClass('Foo');
+		assert.isEqual(false, err.fatal);
+		err = new ErrorClass('Foo', { fatal: true });
+		assert.isEqual(true, err.fatal);
+	});
+
 	t.it('should have location when provided', () => {
 		const err = new ErrorClass('Foo bar baz', { location: 'some:component:location' });
 		assert.isEqual('some:component:location', err.location);
