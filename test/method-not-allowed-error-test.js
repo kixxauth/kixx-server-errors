@@ -3,7 +3,7 @@
 const { assert } = require('kixx-assert');
 const { EOL } = require('os');
 
-const ErrorClass = require('../lib/method-not-allowed-error');
+const ErrorClass = require('../lib/errors/method-not-allowed-error');
 
 const ERROR_NAME = 'MethodNotAllowedError';
 const ERROR_CODE = 'METHOD_NOT_ALLOWED_ERROR';

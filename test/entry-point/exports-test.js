@@ -13,7 +13,6 @@ module.exports = function runTests(t) {
 		NotFoundError: 'not-found-error',
 		NotImplementedError: 'not-implemented-error',
 		OperationalError: 'operational-error',
-		StackedError: 'stacked-error',
 		UnauthorizedError: 'unauthorized-error',
 		UnprocessableError: 'unprocessable-error',
 		UnsupportedMediaTypeError: 'unsupported-media-type-error',
@@ -26,7 +25,7 @@ module.exports = function runTests(t) {
 		require('../../index')
 	));
 
-	const BASE_ERRORS_LIB_PATH = '../../lib';
+	const BASE_ERRORS_LIB_PATH = '../../lib/errors';
 
 	t.it('should export all expected Error classes', () => {
 		Object.entries(EXPECTED_ERRORS).forEach(([ className, fileName ]) => {

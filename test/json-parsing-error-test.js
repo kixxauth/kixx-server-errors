@@ -3,7 +3,7 @@
 const { assert } = require('kixx-assert');
 const { EOL } = require('os');
 
-const ErrorClass = require('../lib/json-parsing-error');
+const ErrorClass = require('../lib/errors/json-parsing-error');
 
 const ERROR_NAME = 'JsonParsingError';
 const ERROR_CODE = 'JSON_PARSING_ERROR';

@@ -3,7 +3,7 @@
 const { assert } = require('kixx-assert');
 const { EOL } = require('os');
 
-const ErrorClass = require('../lib/conflict-error');
+const ErrorClass = require('../lib/errors/conflict-error');
 
 const ERROR_NAME = 'ConflictError';
 const ERROR_CODE = 'CONFLICT_ERROR';

@@ -3,7 +3,7 @@
 const { assert } = require('kixx-assert');
 const { EOL } = require('os');
 
-const ErrorClass = require('../lib/unauthorized-error');
+const ErrorClass = require('../lib/errors/unauthorized-error');
 
 const ERROR_NAME = 'UnauthorizedError';
 const ERROR_CODE = 'UNAUTHORIZED_ERROR';

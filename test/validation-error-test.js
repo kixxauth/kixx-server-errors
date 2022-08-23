@@ -3,7 +3,7 @@
 const { assert } = require('kixx-assert');
 const { EOL } = require('os');
 
-const ErrorClass = require('../lib/validation-error');
+const ErrorClass = require('../lib/errors/validation-error');
 
 const ERROR_NAME = 'ValidationError';
 const ERROR_CODE = 'VALIDATION_ERROR_CONTAINER';

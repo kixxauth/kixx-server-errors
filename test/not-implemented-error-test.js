@@ -3,7 +3,7 @@
 const { assert } = require('kixx-assert');
 const { EOL } = require('os');
 
-const ErrorClass = require('../lib/not-implemented-error');
+const ErrorClass = require('../lib/errors/not-implemented-error');
 
 const ERROR_NAME = 'NotImplementedError';
 const ERROR_CODE = 'NOT_IMPLEMENTED_ERROR';

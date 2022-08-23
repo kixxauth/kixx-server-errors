@@ -3,7 +3,7 @@
 const { assert } = require('kixx-assert');
 const { EOL } = require('os');
 
-const ErrorClass = require('../lib/bad-request-error');
+const ErrorClass = require('../lib/errors/bad-request-error');
 
 const ERROR_NAME = 'BadRequestError';
 const ERROR_CODE = 'BAD_REQUEST_ERROR';

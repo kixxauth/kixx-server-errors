@@ -3,7 +3,7 @@
 const { assert } = require('kixx-assert');
 const { EOL } = require('os');
 
-const ErrorClass = require('../lib/not-acceptable-error');
+const ErrorClass = require('../lib/errors/not-acceptable-error');
 
 const ERROR_NAME = 'NotAcceptableError';
 const ERROR_CODE = 'NOT_ACCEPTABLE_ERROR';

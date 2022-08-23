@@ -3,8 +3,9 @@
 const { EOL } = require('os');
 const { assert } = require('kixx-assert');
 
+const StackedError = require('../../lib/stacked-error');
+
 const {
-	StackedError,
 	getFullStack,
 	includesErrorCode,
 	getOperationalError,

@@ -3,7 +3,7 @@
 const { assert } = require('kixx-assert');
 const { EOL } = require('os');
 
-const ErrorClass = require('../lib/not-found-error');
+const ErrorClass = require('../lib/errors/not-found-error');
 
 const ERROR_NAME = 'NotFoundError';
 const ERROR_CODE = 'NOT_FOUND_ERROR';

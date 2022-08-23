@@ -2,21 +2,22 @@
 
 const { EOL } = require('os');
 
-const BadRequestError = require('./lib/bad-request-error');
-const ConflictError = require('./lib/conflict-error');
-const ForbiddenError = require('./lib/forbidden-error');
-const JsonParsingError = require('./lib/json-parsing-error');
-const MethodNotAllowedError = require('./lib/method-not-allowed-error');
-const NotAcceptableError = require('./lib/not-acceptable-error');
-const NotFoundError = require('./lib/not-found-error');
-const NotImplementedError = require('./lib/not-implemented-error');
-const OperationalError = require('./lib/operational-error');
 const StackedError = require('./lib/stacked-error');
-const UnauthorizedError = require('./lib/unauthorized-error');
-const UnprocessableError = require('./lib/unprocessable-error');
-const UnsupportedMediaTypeError = require('./lib/unsupported-media-type-error');
-const UserError = require('./lib/user-error');
-const ValidationError = require('./lib/validation-error');
+
+const BadRequestError = require('./lib/errors/bad-request-error');
+const ConflictError = require('./lib/errors/conflict-error');
+const ForbiddenError = require('./lib/errors/forbidden-error');
+const JsonParsingError = require('./lib/errors/json-parsing-error');
+const MethodNotAllowedError = require('./lib/errors/method-not-allowed-error');
+const NotAcceptableError = require('./lib/errors/not-acceptable-error');
+const NotFoundError = require('./lib/errors/not-found-error');
+const NotImplementedError = require('./lib/errors/not-implemented-error');
+const OperationalError = require('./lib/errors/operational-error');
+const UnauthorizedError = require('./lib/errors/unauthorized-error');
+const UnprocessableError = require('./lib/errors/unprocessable-error');
+const UnsupportedMediaTypeError = require('./lib/errors/unsupported-media-type-error');
+const UserError = require('./lib/errors/user-error');
+const ValidationError = require('./lib/errors/validation-error');
 
 
 function getFullStack(err) {
@@ -115,7 +116,6 @@ exports.NotAcceptableError = NotAcceptableError;
 exports.NotFoundError = NotFoundError;
 exports.NotImplementedError = NotImplementedError;
 exports.OperationalError = OperationalError;
-exports.StackedError = StackedError;
 exports.UnauthorizedError = UnauthorizedError;
 exports.UnprocessableError = UnprocessableError;
 exports.UnsupportedMediaTypeError = UnsupportedMediaTypeError;

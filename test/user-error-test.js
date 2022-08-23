@@ -3,7 +3,7 @@
 const { assert } = require('kixx-assert');
 const { EOL } = require('os');
 
-const ErrorClass = require('../lib/user-error');
+const ErrorClass = require('../lib/errors/user-error');
 
 const ERROR_NAME = 'UserError';
 const ERROR_CODE = 'USER_ERROR';

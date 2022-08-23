@@ -3,7 +3,7 @@
 const { assert } = require('kixx-assert');
 const { EOL } = require('os');
 
-const ErrorClass = require('../lib/forbidden-error');
+const ErrorClass = require('../lib/errors/forbidden-error');
 
 const ERROR_NAME = 'ForbiddenError';
 const ERROR_CODE = 'FORBIDDEN_ERROR';

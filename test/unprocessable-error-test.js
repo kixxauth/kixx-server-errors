@@ -3,7 +3,7 @@
 const { assert } = require('kixx-assert');
 const { EOL } = require('os');
 
-const ErrorClass = require('../lib/unprocessable-error');
+const ErrorClass = require('../lib/errors/unprocessable-error');
 
 const ERROR_NAME = 'UnprocessableError';
 const ERROR_CODE = 'UNPROCESSABLE_ERROR';

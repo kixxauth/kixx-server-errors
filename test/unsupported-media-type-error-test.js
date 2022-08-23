@@ -3,7 +3,7 @@
 const { assert } = require('kixx-assert');
 const { EOL } = require('os');
 
-const ErrorClass = require('../lib/unsupported-media-type-error');
+const ErrorClass = require('../lib/errors/unsupported-media-type-error');
 
 const ERROR_NAME = 'UnsupportedMediaTypeError';
 const ERROR_CODE = 'UNSUPPORTED_MEDIA_TYPE_ERROR';
