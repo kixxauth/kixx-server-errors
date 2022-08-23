@@ -13,10 +13,10 @@ module.exports = function runTests(t) {
 		NotFoundError: 'not-found-error',
 		NotImplementedError: 'not-implemented-error',
 		OperationalError: 'operational-error',
+		ProgrammerError: 'programmer-error',
 		UnauthorizedError: 'unauthorized-error',
 		UnprocessableError: 'unprocessable-error',
 		UnsupportedMediaTypeError: 'unsupported-media-type-error',
-		UserError: 'user-error',
 		ValidationError: 'validation-error',
 	});
 

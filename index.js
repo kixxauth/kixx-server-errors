@@ -11,10 +11,10 @@ const NotAcceptableError = require('./lib/errors/not-acceptable-error');
 const NotFoundError = require('./lib/errors/not-found-error');
 const NotImplementedError = require('./lib/errors/not-implemented-error');
 const OperationalError = require('./lib/errors/operational-error');
+const ProgrammerError = require('./lib/errors/programmer-error');
 const UnauthorizedError = require('./lib/errors/unauthorized-error');
 const UnprocessableError = require('./lib/errors/unprocessable-error');
 const UnsupportedMediaTypeError = require('./lib/errors/unsupported-media-type-error');
-const UserError = require('./lib/errors/user-error');
 const ValidationError = require('./lib/errors/validation-error');
 
 
@@ -62,10 +62,10 @@ exports.NotAcceptableError = NotAcceptableError;
 exports.NotFoundError = NotFoundError;
 exports.NotImplementedError = NotImplementedError;
 exports.OperationalError = OperationalError;
+exports.ProgrammerError = ProgrammerError;
 exports.UnauthorizedError = UnauthorizedError;
 exports.UnprocessableError = UnprocessableError;
 exports.UnsupportedMediaTypeError = UnsupportedMediaTypeError;
-exports.UserError = UserError;
 exports.ValidationError = ValidationError;
 
 exports.getFullStack = getFullStack;
