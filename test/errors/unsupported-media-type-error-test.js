@@ -41,9 +41,7 @@ module.exports = function runTest(t) {
 	});
 
 	t.it('should use err.code when code is NOT provided', () => {
-		const firstError = new Error('Root error');
-		firstError.code = 'fu';
-		const err = new ErrorClass('Foo bar baz.', { err: firstError });
+		const err = new ErrorClass('Foo bar baz.', { code: 'fu' });
 		assert.isEqual('fu', err.code);
 	});
 
