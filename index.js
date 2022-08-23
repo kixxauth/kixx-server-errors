@@ -2,8 +2,6 @@
 
 const { EOL } = require('os');
 
-const StackedError = require('./lib/stacked-error');
-
 const BadRequestError = require('./lib/errors/bad-request-error');
 const ConflictError = require('./lib/errors/conflict-error');
 const ForbiddenError = require('./lib/errors/forbidden-error');
@@ -34,58 +32,6 @@ function getFullStack(err) {
 	return errors.map((e) => {
 		return e.stack || 'No stack trace';
 	}).join(`${ EOL }caused by:${ EOL }`);
-}
-
-function includesErrorCode(err, code) {
-	let errors = err ? [ err ] : [];
-
-	if (err && Array.isArray(err.errors)) {
-		errors = errors.concat(err.errors);
-	}
-
-	for (let i = 0; i < errors.length; i = i + 1) {
-		if (errors[i] && errors[i].code === code) {
-			return true;
-		}
-	}
-
-	return false;
-}
-
-function getOperationalError(err) {
-	let errors = err ? [ err ] : [];
-
-	if (err && Array.isArray(err.errors)) {
-		errors = errors.concat(err.errors);
-	}
-
-	// Search through the errors list from oldest to most recent.
-	for (let i = errors.length - 1; i >= 0; i = i - 1) {
-		const e = errors[i];
-		if (e && (typeof e.code === 'string' || typeof e.code === 'number')) {
-			return e;
-		}
-	}
-
-	return err;
-}
-
-function getFirstStackedError(err) {
-	let errors = err ? [ err ] : [];
-
-	if (err && Array.isArray(err.errors)) {
-		errors = errors.concat(err.errors);
-	}
-
-	// Search through the errors list from oldest to most recent.
-	for (let i = errors.length - 1; i >= 0; i = i - 1) {
-		const e = errors[i];
-		if (e instanceof StackedError) {
-			return e;
-		}
-	}
-
-	return err;
 }
 
 function getHttpError(err) {
@@ -123,7 +69,4 @@ exports.UserError = UserError;
 exports.ValidationError = ValidationError;
 
 exports.getFullStack = getFullStack;
-exports.includesErrorCode = includesErrorCode;
-exports.getOperationalError = getOperationalError;
-exports.getFirstStackedError = getFirstStackedError;
 exports.getHttpError = getHttpError;
