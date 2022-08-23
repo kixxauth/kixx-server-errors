@@ -3,7 +3,7 @@
 const { assert } = require('kixx-assert');
 const { EOL } = require('os');
 
-const ErrorClass = require('../lib/errors/method-not-allowed-error');
+const ErrorClass = require('../../lib/errors/method-not-allowed-error');
 
 const ERROR_NAME = 'MethodNotAllowedError';
 const ERROR_CODE = 'METHOD_NOT_ALLOWED_ERROR';
@@ -97,6 +97,6 @@ module.exports = function runTest(t) {
 		const firstLines = err.stack.split(EOL).slice(0, 2);
 
 		assert.isEqual(`${ ERROR_NAME }: Baz: Bar: Foo`, firstLines[0]);
-		assert.isOk(firstLines[1].includes('test/method-not-allowed-error-test.js:'));
+		assert.isOk(firstLines[1].includes('test/errors/method-not-allowed-error-test.js:'));
 	});
 };

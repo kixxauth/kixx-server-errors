@@ -3,12 +3,12 @@
 const { assert } = require('kixx-assert');
 const { EOL } = require('os');
 
-const ErrorClass = require('../lib/errors/not-found-error');
+const ErrorClass = require('../../lib/errors/validation-error');
 
-const ERROR_NAME = 'NotFoundError';
-const ERROR_CODE = 'NOT_FOUND_ERROR';
-const ERROR_TITLE = 'Not Found';
-const ERROR_STATUS_CODE = 404;
+const ERROR_NAME = 'ValidationError';
+const ERROR_CODE = 'VALIDATION_ERROR_CONTAINER';
+const ERROR_TITLE = 'Validation Error';
+const ERROR_STATUS_CODE = 400;
 
 module.exports = function runTest(t) {
 	t.it('should be an instance of an Error', () => {
@@ -97,6 +97,6 @@ module.exports = function runTest(t) {
 		const firstLines = err.stack.split(EOL).slice(0, 2);
 
 		assert.isEqual(`${ ERROR_NAME }: Baz: Bar: Foo`, firstLines[0]);
-		assert.isOk(firstLines[1].includes('test/not-found-error-test.js:'));
+		assert.isOk(firstLines[1].includes('test/errors/validation-error-test.js:'));
 	});
 };

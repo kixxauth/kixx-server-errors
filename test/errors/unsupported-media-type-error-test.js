@@ -3,12 +3,12 @@
 const { assert } = require('kixx-assert');
 const { EOL } = require('os');
 
-const ErrorClass = require('../lib/errors/bad-request-error');
+const ErrorClass = require('../../lib/errors/unsupported-media-type-error');
 
-const ERROR_NAME = 'BadRequestError';
-const ERROR_CODE = 'BAD_REQUEST_ERROR';
-const ERROR_TITLE = 'Bad Request';
-const ERROR_STATUS_CODE = 400;
+const ERROR_NAME = 'UnsupportedMediaTypeError';
+const ERROR_CODE = 'UNSUPPORTED_MEDIA_TYPE_ERROR';
+const ERROR_TITLE = 'Unsupported Media Type';
+const ERROR_STATUS_CODE = 415;
 
 module.exports = function runTest(t) {
 	t.it('should be an instance of an Error', () => {
@@ -97,6 +97,6 @@ module.exports = function runTest(t) {
 		const firstLines = err.stack.split(EOL).slice(0, 2);
 
 		assert.isEqual(`${ ERROR_NAME }: Baz: Bar: Foo`, firstLines[0]);
-		assert.isOk(firstLines[1].includes('test/bad-request-error-test.js:'));
+		assert.isOk(firstLines[1].includes('test/errors/unsupported-media-type-error-test.js:'));
 	});
 };

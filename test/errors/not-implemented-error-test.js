@@ -3,7 +3,7 @@
 const { assert } = require('kixx-assert');
 const { EOL } = require('os');
 
-const ErrorClass = require('../lib/errors/not-implemented-error');
+const ErrorClass = require('../../lib/errors/not-implemented-error');
 
 const ERROR_NAME = 'NotImplementedError';
 const ERROR_CODE = 'NOT_IMPLEMENTED_ERROR';
@@ -97,6 +97,6 @@ module.exports = function runTest(t) {
 		const firstLines = err.stack.split(EOL).slice(0, 2);
 
 		assert.isEqual(`${ ERROR_NAME }: Baz: Bar: Foo`, firstLines[0]);
-		assert.isOk(firstLines[1].includes('test/not-implemented-error-test.js:'));
+		assert.isOk(firstLines[1].includes('test/errors/not-implemented-error-test.js:'));
 	});
 };

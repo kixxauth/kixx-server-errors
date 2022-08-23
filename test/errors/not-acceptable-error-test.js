@@ -3,11 +3,12 @@
 const { assert } = require('kixx-assert');
 const { EOL } = require('os');
 
-const ErrorClass = require('../lib/errors/user-error');
+const ErrorClass = require('../../lib/errors/not-acceptable-error');
 
-const ERROR_NAME = 'UserError';
-const ERROR_CODE = 'USER_ERROR';
-const ERROR_TITLE = 'User Error';
+const ERROR_NAME = 'NotAcceptableError';
+const ERROR_CODE = 'NOT_ACCEPTABLE_ERROR';
+const ERROR_TITLE = 'Not Acceptable';
+const ERROR_STATUS_CODE = 406;
 
 module.exports = function runTest(t) {
 	t.it('should be an instance of an Error', () => {
@@ -55,7 +56,8 @@ module.exports = function runTest(t) {
 
 	t.it('should have correct statusCode', () => {
 		const err = new ErrorClass('Foo bar baz.');
-		assert.isUndefined(err.statusCode);
+		assert.isEqual(ERROR_STATUS_CODE, ErrorClass.STATUS_CODE);
+		assert.isEqual(ErrorClass.STATUS_CODE, err.statusCode);
 	});
 
 	t.it('should have correct message with NO root errors', () => {
@@ -95,6 +97,6 @@ module.exports = function runTest(t) {
 		const firstLines = err.stack.split(EOL).slice(0, 2);
 
 		assert.isEqual(`${ ERROR_NAME }: Baz: Bar: Foo`, firstLines[0]);
-		assert.isOk(firstLines[1].includes('test/user-error-test.js:'));
+		assert.isOk(firstLines[1].includes('test/errors/not-acceptable-error-test.js:'));
 	});
 };

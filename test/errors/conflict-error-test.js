@@ -3,12 +3,12 @@
 const { assert } = require('kixx-assert');
 const { EOL } = require('os');
 
-const ErrorClass = require('../lib/errors/validation-error');
+const ErrorClass = require('../../lib/errors/conflict-error');
 
-const ERROR_NAME = 'ValidationError';
-const ERROR_CODE = 'VALIDATION_ERROR_CONTAINER';
-const ERROR_TITLE = 'Validation Error';
-const ERROR_STATUS_CODE = 400;
+const ERROR_NAME = 'ConflictError';
+const ERROR_CODE = 'CONFLICT_ERROR';
+const ERROR_TITLE = 'Conflict';
+const ERROR_STATUS_CODE = 409;
 
 module.exports = function runTest(t) {
 	t.it('should be an instance of an Error', () => {
@@ -97,6 +97,6 @@ module.exports = function runTest(t) {
 		const firstLines = err.stack.split(EOL).slice(0, 2);
 
 		assert.isEqual(`${ ERROR_NAME }: Baz: Bar: Foo`, firstLines[0]);
-		assert.isOk(firstLines[1].includes('test/validation-error-test.js:'));
+		assert.isOk(firstLines[1].includes('test/errors/conflict-error-test.js:'));
 	});
 };

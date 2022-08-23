@@ -3,12 +3,12 @@
 const { assert } = require('kixx-assert');
 const { EOL } = require('os');
 
-const ErrorClass = require('../lib/errors/unauthorized-error');
+const ErrorClass = require('../../lib/errors/not-found-error');
 
-const ERROR_NAME = 'UnauthorizedError';
-const ERROR_CODE = 'UNAUTHORIZED_ERROR';
-const ERROR_TITLE = 'Unauthorized';
-const ERROR_STATUS_CODE = 401;
+const ERROR_NAME = 'NotFoundError';
+const ERROR_CODE = 'NOT_FOUND_ERROR';
+const ERROR_TITLE = 'Not Found';
+const ERROR_STATUS_CODE = 404;
 
 module.exports = function runTest(t) {
 	t.it('should be an instance of an Error', () => {
@@ -97,6 +97,6 @@ module.exports = function runTest(t) {
 		const firstLines = err.stack.split(EOL).slice(0, 2);
 
 		assert.isEqual(`${ ERROR_NAME }: Baz: Bar: Foo`, firstLines[0]);
-		assert.isOk(firstLines[1].includes('test/unauthorized-error-test.js:'));
+		assert.isOk(firstLines[1].includes('test/errors/not-found-error-test.js:'));
 	});
 };
