@@ -58,7 +58,7 @@ function getOperationalError(err) {
 		errors = errors.concat(err.errors);
 	}
 
-	// Search through the erros list from oldest to most recent.
+	// Search through the errors list from oldest to most recent.
 	for (let i = errors.length - 1; i >= 0; i = i - 1) {
 		const e = errors[i];
 		if (e && (typeof e.code === 'string' || typeof e.code === 'number')) {
@@ -76,7 +76,7 @@ function getFirstStackedError(err) {
 		errors = errors.concat(err.errors);
 	}
 
-	// Search through the erros list from oldest to most recent.
+	// Search through the errors list from oldest to most recent.
 	for (let i = errors.length - 1; i >= 0; i = i - 1) {
 		const e = errors[i];
 		if (e instanceof StackedError) {
@@ -95,7 +95,7 @@ function getHttpError(err) {
 		errors = errors.concat(err.errors);
 	}
 
-	// Search through the erros list from most recent to oldest.
+	// Search through the errors list from most recent to oldest.
 	for (let i = 0; i < errors.length; i = i + 1) {
 		const e = errors[i];
 		if (e && e.statusCode) {
