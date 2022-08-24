@@ -4,6 +4,7 @@ const { assert } = require('kixx-assert');
 const { EOL } = require('os');
 
 const ErrorClass = require('../../lib/errors/validation-error');
+const UnprocessableError = require('../../lib/errors/unprocessable-error');
 
 const ERROR_NAME = 'ValidationError';
 const ERROR_CODE = 'VALIDATION_ERROR_CONTAINER';
@@ -103,5 +104,35 @@ module.exports = function runTest(t) {
 
 		assert.isEqual(`${ ERROR_NAME }: Baz: Bar: Foo`, firstLines[0]);
 		assert.isOk(firstLines[1].includes('test/errors/validation-error-test.js:'));
+	});
+
+	t.it('pushes and checks UnprocessableErrors', () => {
+		const err = new ErrorClass();
+
+		// We get null when there are no errors.
+		assert.isEqual(null, err.withErrorsOrNull());
+
+		err.push('Invalid username', 'username', 'foo');
+		err.push('Invalid password', 'password', 'bar');
+
+		// Returns the ValidationError when errors are present.
+		assert.isEqual(err, err.withErrorsOrNull());
+
+		const err1 = err.unprocessableErrors[0];
+		const err2 = err.unprocessableErrors[1];
+
+		assert.isEqual(UnprocessableError.NAME, err1.name);
+		assert.isEqual(UnprocessableError.NAME, err2.name);
+
+		assert.isEqual(UnprocessableError.CODE, err1.code);
+		assert.isEqual(UnprocessableError.CODE, err2.code);
+
+		assert.isEqual('Invalid username', err1.message);
+		assert.isEqual('Invalid password', err2.message);
+
+		assert.isEqual('username', err1.info.pointer);
+		assert.isEqual('foo', err1.info.value);
+		assert.isEqual('password', err2.info.pointer);
+		assert.isEqual('bar', err2.info.value);
 	});
 };
