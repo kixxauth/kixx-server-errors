@@ -1,8 +1,49 @@
-Kixx Errors
-===========
-Common use case ECMAScript error classes. Includes stackable errors and error handling utilties for better error handling in asychronous situations.
+Kixx Server Errors
+==================
+Common use case ECMAScript error classes for Node.js. Includes stackable errors and error handling utilties for better error handling in asychronous situations.
 
 Inspired by [node-verror](https://github.com/TritonDataCenter/node-verror) and the corresponding [blog post](https://www.tritondatacenter.com/node-js/production/design/errors).
+
+## Table of Contents
+
+1. [Design Goals](#design-goals)
+2. [Examples](#examples)
+3. [API Reference : Error Classes](#error-classes)
+4. [API Reference : Helpers](#helpers)
+5. [Copyright and License](#copyright-and-license)
+
+## Examples
+
+```js
+const fs = require('fs');
+const { OperationalError, getFullStack } = require('kixx-server-errors');
+
+function readConfigFile(callback) {
+	fs.readFile('/etc/my-server/config.inf', function (err, res) {
+		if (err) {
+			const wrappedError = new OperationalError('Failed reading config file', {
+				err,
+				location: 'configLoader:readFile',
+				info: { path: '/etc/my-server/config.inf' }
+			});
+			callback(wrappedError);
+		} else {
+			callback(null, res);
+		}
+	});
+}
+
+// Assume this call fails with a Node.js ENOENT error:
+readConfigFile(function (err, res) {
+});
+```
+
+## Design Goals
+There are 3 main design goals of kixx-server-errors:
+
+1. __Make it easy to construct clear, complete error messages intended for people.__ Clear error messages greatly improve both user experience and debuggability.
+2. __Make it easy to construct objects with programmatically-accessible metadata__ (which we call informational properties). Instead of just saying "connection refused while connecting to 192.168.1.2:80", you can add properties like "ip": "192.168.1.2" and "tcpPort": 80. This can be used for feeding into monitoring systems, analyzing large numbers of Errors (as from a log file), or localizing error messages.
+3. __It also needs to be easy to compose Errors:__ higher-level code should be able to augment the Errors reported by lower-level code to provide a more complete description of what happened. Instead of saying "connection refused", you can say "operation X failed: connection refused".
 
 ## Operational errors vs. programmer errors
 It’s helpful to divide all errors into two broad categories:
@@ -60,13 +101,6 @@ If disconnecting clients is a frequently problem because a server crashes so oft
 ## Bad input: programmer error or operational error?
 How do you know what’s a programmer error vs. an operational error? Quite simply: it’s up to you to define and document what types your function will allow and how you’ll try to interpret them. If you get something other than what you’ve documented to accept, that’s a programmer error. If the input is something you’ve documented to accept but you can’t process right now, that’s an operational error.
 
-## Design Goals
-There are 3 main design goals of kixx-server-errors:
-
-1. __Make it easy to construct clear, complete error messages intended for people.__ Clear error messages greatly improve both user experience and debuggability, so we wanted to make it easy to build them. That's why the constructor takes printf-style arguments.
-2. __Make it easy to construct objects with programmatically-accessible metadata__ (which we call informational properties). Instead of just saying "connection refused while connecting to 192.168.1.2:80", you can add properties like "ip": "192.168.1.2" and "tcpPort": 80. This can be used for feeding into monitoring systems, analyzing large numbers of Errors (as from a log file), or localizing error messages.
-3. __It also needs to be easy to compose Errors:__ higher-level code should be able to augment the Errors reported by lower-level code to provide a more complete description of what happened. Instead of saying "connection refused", you can say "operation X failed: connection refused".
-
 ## API Reference
 
 ### Error Classes
@@ -74,7 +108,7 @@ There are 3 main design goals of kixx-server-errors:
 #### OperationalError
 Use for wrapping low level operational errors like ENOENT and ECONNREFUSED.
 
-Static properties:
+OperationalError: Static properties:
 
 static prop name | description | type
 -----------------|-------------|-----
@@ -82,15 +116,15 @@ NAME | The default instance name | String
 CODE | The default instance code | String
 TITLE | The default instance title | String
 
-Constructor arguments:
+OperationalError: Constructor arguments:
 
 parameter name | description | type | is required | default
 ---------------|-------------|------|-------------|---------
 message | The message string used in the base error | String | required | none
 spec | The specification object to set specific parameters | Object | optional | `{}`
-sourceFunction | The function to pass into Error.captureStackTrace(). | optional | undefined
+sourceFunction | The function to pass into Error.captureStackTrace(). | Function | optional | undefined
 
-Optional specification properties:
+OperationalError: Optional specification properties:
 
 prop name | description | type | default
 ----------|-------------|------|--------
@@ -101,7 +135,7 @@ spec.fatal | Assign the error fatal property instead of the default | Boolean | 
 spec.location | Assign the error location property instead of the default | String | `undefined`
 spec.info | Use as the error info object | Object | `{}`
 
-Instance properties:
+OperationalError: Instance properties:
 
 prop name | description | type
 ----------|-------------|-----
@@ -114,3 +148,16 @@ errors | An imutable list of causal errors | Array
 fatal | Will be spec.fatal or `false` | Boolean
 location | Will be spec.location or `undefined` | String or undefined
 info | Will be spec.info or an empty object | Object
+
+### Helpers
+
+#### getFullStack()
+
+#### getMergedInfo()
+
+#### getHttpError()
+
+## Copyright and License
+Copyright: (c) 2018 - 2022 by Kris Walker (www.kixx.name)
+
+Unless otherwise indicated, all source code is licensed under the MIT license. See MIT-LICENSE for details.
