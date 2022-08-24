@@ -30,15 +30,28 @@ function getFullStack(err) {
 	}
 
 	return errors.map((e) => {
-		return e.stack || 'No stack trace';
+		const stack = e && e.stack;
+		return stack || 'No stack trace';
 	}).join(`${ EOL }caused by:${ EOL }`);
 }
 
-function getHttpError(err) {
-	err = err || {};
-	let errors = [ err ];
+function getMergedInfo(err) {
+	let errors = err ? [ err ] : [];
 
-	if (Array.isArray(err.errors)) {
+	if (err && Array.isArray(err.errors)) {
+		errors = errors.concat(err.errors);
+	}
+
+	return errors.reverse().reduce((info, e) => {
+		const inf = e && e.info;
+		return Object.assign(info, inf || {});
+	}, {});
+}
+
+function getHttpError(err) {
+	let errors = err ? [ err ] : [];
+
+	if (err && Array.isArray(err.errors)) {
 		errors = errors.concat(err.errors);
 	}
 
@@ -69,4 +82,5 @@ exports.UnsupportedMediaTypeError = UnsupportedMediaTypeError;
 exports.ValidationError = ValidationError;
 
 exports.getFullStack = getFullStack;
+exports.getMergedInfo = getMergedInfo;
 exports.getHttpError = getHttpError;
