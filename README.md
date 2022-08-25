@@ -8,8 +8,7 @@ Inspired by [node-verror](https://github.com/TritonDataCenter/node-verror) and t
 
 1. [Design Goals](#design-goals)
 2. [Examples](#examples)
-3. [API Reference : Error Classes](#error-classes)
-4. [API Reference : Helpers](#helpers)
+3. [API Reference](#api-reference)
 5. [Copyright and License](#copyright-and-license)
 
 ## Design Goals
@@ -26,22 +25,44 @@ const fs = require('fs');
 const { OperationalError, getFullStack } = require('kixx-server-errors');
 
 function readConfigFile(callback) {
-	fs.readFile('/etc/my-server/config.inf', function (err, res) {
-		if (err) {
-			const wrappedError = new OperationalError('Failed reading config file', {
-				err,
-				location: 'configLoader:readFile',
-				info: { path: '/etc/my-server/config.inf' }
-			});
-			callback(wrappedError);
-		} else {
-			callback(null, res);
-		}
-	});
+  fs.readFile('/etc/my-server/config.inf', function (err, res) {
+    if (err) {
+      const wrappedError = new OperationalError('Failed reading config file', {
+        err,
+        location: 'configLoader:readFile',
+        info: {
+          path: '/etc/my-server/config.inf',
+          syscall: err.syscall
+        }
+      });
+      callback(wrappedError);
+    } else {
+      callback(null, res);
+    }
+  });
 }
 
 // Assume this call fails with a Node.js ENOENT error:
 readConfigFile(function (err, res) {
+  if (err) {
+    // Assuming the file does not exist, we would get an OperationalError wrapping
+    // a Node.js ENOENT error
+    assert.isEqual(OperationalError.NAME, err.name);
+    assert.isEqual(OperationalError.CODE, err.code);
+
+    // Notice the message is the combined message from the root cause Error and
+    // the wrapping OperationalError.
+    assert.isEqual("Failed reading config file: ENOENT: no such file or directory, open '/etc/my-server/config.inf'", err.message);
+    assert.isEqual("OperationalErrror: Failed reading config file => Error: ENOENT: no such file or directory, open '/etc/my-server/config.inf'", err.detail)
+
+    // The error is annotated with other helpful information.
+    assert.isEqual('configLoader:readFile', err.location);
+    assert.isEqual('/etc/my-server/config.inf', err.info.path);
+    assert.isEqual('open', err.info.syscall);
+
+    // Print the combined stack trace of the OperationalError and the wrapped error.
+    console.error(getFullStack(err));
+  }
 });
 ```
 
