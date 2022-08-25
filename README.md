@@ -12,6 +12,13 @@ Inspired by [node-verror](https://github.com/TritonDataCenter/node-verror) and t
 4. [API Reference : Helpers](#helpers)
 5. [Copyright and License](#copyright-and-license)
 
+## Design Goals
+There are 3 main design goals of kixx-server-errors:
+
+1. __Make it easy to construct clear, complete error messages intended for people.__ Clear error messages greatly improve both user experience and debuggability.
+2. __Make it easy to construct objects with programmatically-accessible metadata__ (which we call informational properties). Instead of just saying "connection refused while connecting to 192.168.1.2:80", you can add properties like "ip": "192.168.1.2" and "tcpPort": 80. This can be used for feeding into monitoring systems, analyzing large numbers of Errors (as from a log file), or localizing error messages.
+3. __It also needs to be easy to compose Errors:__ higher-level code should be able to augment the Errors reported by lower-level code to provide a more complete description of what happened. Instead of saying "connection refused", you can say "operation X failed: connection refused".
+
 ## Examples
 
 ```js
@@ -37,13 +44,6 @@ function readConfigFile(callback) {
 readConfigFile(function (err, res) {
 });
 ```
-
-## Design Goals
-There are 3 main design goals of kixx-server-errors:
-
-1. __Make it easy to construct clear, complete error messages intended for people.__ Clear error messages greatly improve both user experience and debuggability.
-2. __Make it easy to construct objects with programmatically-accessible metadata__ (which we call informational properties). Instead of just saying "connection refused while connecting to 192.168.1.2:80", you can add properties like "ip": "192.168.1.2" and "tcpPort": 80. This can be used for feeding into monitoring systems, analyzing large numbers of Errors (as from a log file), or localizing error messages.
-3. __It also needs to be easy to compose Errors:__ higher-level code should be able to augment the Errors reported by lower-level code to provide a more complete description of what happened. Instead of saying "connection refused", you can say "operation X failed: connection refused".
 
 ## Operational errors vs. programmer errors
 It’s helpful to divide all errors into two broad categories:
@@ -103,9 +103,18 @@ How do you know what’s a programmer error vs. an operational error? Quite simp
 
 ## API Reference
 
-### Error Classes
+__Error Classes__
 
-#### OperationalError
+- [OperationalError](#operationalerror)
+- [ProgrammerError](#programmererror)
+
+__Helpers__
+
+- [getFullStack()](#getfullstack)
+- [getMergedInfo()](#getmergedinfo)
+- [getHttpError()](#gethttperror)
+
+### OperationalError
 Use for wrapping low level operational errors like ENOENT and ECONNREFUSED.
 
 OperationalError: Static properties:
@@ -149,13 +158,11 @@ fatal | Will be spec.fatal or `false` | Boolean
 location | Will be spec.location or `undefined` | String or undefined
 info | Will be spec.info or an empty object | Object
 
-### Helpers
+### getFullStack()
 
-#### getFullStack()
+### getMergedInfo()
 
-#### getMergedInfo()
-
-#### getHttpError()
+### getHttpError()
 
 ## Copyright and License
 Copyright: (c) 2018 - 2022 by Kris Walker (www.kixx.name)
