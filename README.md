@@ -7,7 +7,7 @@ Inspired by [node-verror](https://github.com/TritonDataCenter/node-verror) and t
 ## Table of Contents
 
 1. [Design Goals](#design-goals)
-2. [Ethos](#operational-errors-vs-programmer-errors)
+2. [Ethos](#ethos)
 2. [Examples](#examples)
 3. [API Reference](#api-reference)
 5. [Copyright and License](#copyright-and-license)
@@ -18,6 +18,9 @@ There are 3 main design goals of kixx-server-errors:
 1. __Make it easy to construct clear, complete error messages intended for people.__ Clear error messages greatly improve both user experience and debuggability.
 2. __Make it easy to construct objects with programmatically-accessible metadata__ (which we call informational properties). Instead of just saying "connection refused while connecting to 192.168.1.2:80", you can add properties like "ip": "192.168.1.2" and "tcpPort": 80. This can be used for feeding into monitoring systems, analyzing large numbers of Errors (as from a log file), or localizing error messages.
 3. __It also needs to be easy to compose Errors:__ higher-level code should be able to augment the Errors reported by lower-level code to provide a more complete description of what happened. Instead of saying "connection refused", you can say "operation X failed: connection refused".
+
+## Ethos
+The KIXX Server Errors ethos is provided by excerpts from this great blog post on [error handling in Node.js](https://www.tritondatacenter.com/node-js/production/design/errors). Reprinted here for posterity:
 
 ## Operational errors vs. programmer errors
 It’s helpful to divide all errors into two broad categories:
@@ -132,6 +135,8 @@ __Error Classes__
 - [JsonParsingError](#jsonparsingerror)
 - [ValidationError](#validationerror)
 
+__HTTP Specific Error Classes__
+
 - [BadRequestError](#badrequesterror)
 - [ConflictError](#conflicterror)
 - [ForbiddenError](#forbiddenerror)
@@ -162,8 +167,8 @@ TITLE | The default instance title | String
 
 OperationalError: Constructor arguments:
 
-parameter name | description | type | required | default
----------------|-------------|------|----------|---------
+name | description | type | required | default
+-----|-------------|------|----------|---------
 message | The message string used in the base error | String | yes | none
 spec | The specification object to set specific parameters | Object | optional | `{}`
 sourceFunction | The function to pass into Error.captureStackTrace(). | Function | optional | undefined
@@ -198,8 +203,8 @@ Take any Error or "Error like" object and return the stack trace as a string. If
 
 `getFullStack(err)`
 
-parameter name | description | type | required | default
----------------|-------------|------|----------|---------
+parameter | description | type | required | default
+----------|-------------|------|----------|---------
 err | Any Error object | Error | yes | none
 
 
@@ -216,12 +221,12 @@ console.log(getFullStack(topError));
 // Will print:
 /*
 ProgrammerError: You did something wrong: Root Cause
-    at Object.<anonymous> (/Users/You/my-file.js:4:18)
+    at Object.<anonymous> (/Users/You/your-file.js:4:18)
     at Module._compile (node:internal/modules/cjs/loader:1103:14)
     at Object.Module._extensions..js (node:internal/modules/cjs/loader:1155:10)
 caused by:
 Error: Root Cause
-    at Object.<anonymous> (/Users/You/my-file.js:3:18)
+    at Object.<anonymous> (/Users/You/your-file.js:3:18)
     at Module._compile (node:internal/modules/cjs/loader:1103:14)
     at Object.Module._extensions..js (node:internal/modules/cjs/loader:1155:10)
 */
@@ -232,8 +237,8 @@ Take any Error or "Error like" object and return the merged `.info` property fro
 
 `getMergedInfo(err)`
 
-parameter name | description | type | required | default
----------------|-------------|------|----------|---------
+parameter | description | type | required | default
+----------|-------------|------|----------|---------
 err | Any Error object | Error | yes | none
 
 ```js
@@ -270,8 +275,8 @@ Take any Error or "Error like" object and return the causal error with a `.statu
 
 `getHttpError(err)`
 
-parameter name | description | type | required | default
----------------|-------------|------|----------|---------
+parameter | description | type | required | default
+----------|-------------|------|----------|---------
 err | Any Error object | Error | yes | none
 
 ```js
@@ -287,10 +292,15 @@ const error2 = new BadRequestError('Invalid request parameters', { err: error1 }
 const err = getHttpError(error2);
 
 // Send status 400 from BadRequestError
-res.status(err.statusCode).send(JSON.stringify({ error: { name: err.name, detail: err.detail }}));
+res
+  .status(err.statusCode)
+  .sendJSON(JSON.stringify({ error: {
+    name: err.name,
+    detail: err.detail
+  }}));
 ```
 
 ## Copyright and License
-Copyright: (c) 2018 - 2022 by Kris Walker (www.kixx.name)
+Copyright: (c) 2018 - 2022 by Kris Walker <kris@kixx.name>
 
 Unless otherwise indicated, all source code is licensed under the MIT license. See MIT-LICENSE for details.
