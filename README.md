@@ -7,6 +7,7 @@ Inspired by [node-verror](https://github.com/TritonDataCenter/node-verror) and t
 ## Table of Contents
 
 1. [Design Goals](#design-goals)
+2. [Ethos](#operational-errors-vs-programmer-errors)
 2. [Examples](#examples)
 3. [API Reference](#api-reference)
 5. [Copyright and License](#copyright-and-license)
@@ -17,54 +18,6 @@ There are 3 main design goals of kixx-server-errors:
 1. __Make it easy to construct clear, complete error messages intended for people.__ Clear error messages greatly improve both user experience and debuggability.
 2. __Make it easy to construct objects with programmatically-accessible metadata__ (which we call informational properties). Instead of just saying "connection refused while connecting to 192.168.1.2:80", you can add properties like "ip": "192.168.1.2" and "tcpPort": 80. This can be used for feeding into monitoring systems, analyzing large numbers of Errors (as from a log file), or localizing error messages.
 3. __It also needs to be easy to compose Errors:__ higher-level code should be able to augment the Errors reported by lower-level code to provide a more complete description of what happened. Instead of saying "connection refused", you can say "operation X failed: connection refused".
-
-## Examples
-
-```js
-const fs = require('fs');
-const { OperationalError, getFullStack } = require('kixx-server-errors');
-
-function readConfigFile(callback) {
-  fs.readFile('/etc/my-server/config.inf', function (err, res) {
-    if (err) {
-      const wrappedError = new OperationalError('Failed reading config file', {
-        err,
-        location: 'configLoader:readFile',
-        info: {
-          path: '/etc/my-server/config.inf',
-          syscall: err.syscall
-        }
-      });
-      callback(wrappedError);
-    } else {
-      callback(null, res);
-    }
-  });
-}
-
-// Assume this call fails with a Node.js ENOENT error:
-readConfigFile(function (err, res) {
-  if (err) {
-    // Assuming the file does not exist, we would get an OperationalError wrapping
-    // a Node.js ENOENT error
-    assert.isEqual(OperationalError.NAME, err.name);
-    assert.isEqual(OperationalError.CODE, err.code);
-
-    // Notice the message is the combined message from the root cause Error and
-    // the wrapping OperationalError.
-    assert.isEqual("Failed reading config file: ENOENT: no such file or directory, open '/etc/my-server/config.inf'", err.message);
-    assert.isEqual("OperationalErrror: Failed reading config file => Error: ENOENT: no such file or directory, open '/etc/my-server/config.inf'", err.detail)
-
-    // The error is annotated with other helpful information.
-    assert.isEqual('configLoader:readFile', err.location);
-    assert.isEqual('/etc/my-server/config.inf', err.info.path);
-    assert.isEqual('open', err.info.syscall);
-
-    // Print the combined stack trace of the OperationalError and the wrapped error.
-    console.error(getFullStack(err));
-  }
-});
-```
 
 ## Operational errors vs. programmer errors
 It’s helpful to divide all errors into two broad categories:
@@ -122,12 +75,73 @@ If disconnecting clients is a frequently problem because a server crashes so oft
 ## Bad input: programmer error or operational error?
 How do you know what’s a programmer error vs. an operational error? Quite simply: it’s up to you to define and document what types your function will allow and how you’ll try to interpret them. If you get something other than what you’ve documented to accept, that’s a programmer error. If the input is something you’ve documented to accept but you can’t process right now, that’s an operational error.
 
+## Examples
+
+```js
+const fs = require('fs');
+const { OperationalError, getFullStack } = require('kixx-server-errors');
+
+function readConfigFile(callback) {
+  fs.readFile('/etc/my-server/config.inf', function (err, res) {
+    if (err) {
+      const wrappedError = new OperationalError('Failed reading config file', {
+        err,
+        location: 'configLoader:readFile',
+        info: {
+          path: '/etc/my-server/config.inf',
+          syscall: err.syscall
+        }
+      });
+      callback(wrappedError);
+    } else {
+      callback(null, res);
+    }
+  });
+}
+
+// Assume this call fails with a Node.js ENOENT error:
+readConfigFile(function (err, res) {
+  if (err) {
+    // Assuming the file does not exist, we would get an OperationalError wrapping
+    // a Node.js ENOENT error
+    assert.isEqual(OperationalError.NAME, err.name);
+    assert.isEqual(OperationalError.CODE, err.code);
+
+    // Notice the message is the combined message from the root cause Error and
+    // the wrapping OperationalError.
+    assert.isEqual("Failed reading config file: ENOENT: no such file or directory, open '/etc/my-server/config.inf'", err.message);
+    assert.isEqual("OperationalErrror: Failed reading config file => Error: ENOENT: no such file or directory, open '/etc/my-server/config.inf'", err.detail)
+
+    // The error is annotated with other helpful information.
+    assert.isEqual('configLoader:readFile', err.location);
+    assert.isEqual('/etc/my-server/config.inf', err.info.path);
+    assert.isEqual('open', err.info.syscall);
+
+    // Print the combined stack trace of the OperationalError and the wrapped error.
+    console.error(getFullStack(err));
+  }
+});
+```
+
 ## API Reference
 
 __Error Classes__
 
 - [OperationalError](#operationalerror)
 - [ProgrammerError](#programmererror)
+- [JsonParsingError](#jsonparsingerror)
+- [ValidationError](#validationerror)
+
+- [BadRequestError](#badrequesterror)
+- [ConflictError](#conflicterror)
+- [ForbiddenError](#forbiddenerror)
+- [MethodNotAllowedError](#methodnotallowederror)
+- [NotAcceptableError](#notacceptableerror)
+- [NotFoundError](#notfounderror)
+- [NotImplementedError](#notimplementederror)
+- [UnauthorizedError](#unauthorizederror)
+- [UnprocessableError](#unprocessableerror)
+- [UnsupportedMediaTypeError](#unsupportedmediatypeerror)
 
 __Helpers__
 
@@ -148,9 +162,9 @@ TITLE | The default instance title | String
 
 OperationalError: Constructor arguments:
 
-parameter name | description | type | is required | default
----------------|-------------|------|-------------|---------
-message | The message string used in the base error | String | required | none
+parameter name | description | type | required | default
+---------------|-------------|------|----------|---------
+message | The message string used in the base error | String | yes | none
 spec | The specification object to set specific parameters | Object | optional | `{}`
 sourceFunction | The function to pass into Error.captureStackTrace(). | Function | optional | undefined
 
@@ -180,10 +194,101 @@ location | Will be spec.location or `undefined` | String or undefined
 info | Will be spec.info or an empty object | Object
 
 ### getFullStack()
+Take any Error or "Error like" object and return the stack trace as a string. If the Error object has causal errors (an .errors Array property) then those stack traces will also be appended to the returned string delineated by "caused by:".
+
+`getFullStack(err)`
+
+parameter name | description | type | required | default
+---------------|-------------|------|----------|---------
+err | Any Error object | Error | yes | none
+
+
+```js
+const { getFullStack, ProgrammerError } = require('kixx-server-errors');
+
+const err = new Error('Root Cause');
+const topError = new ProgrammerError('You did something wrong', { err });
+
+// Print out the combined stack trace of the top level error and all causal errors.
+console.log(getFullStack(topError));
+
+
+// Will print:
+/*
+ProgrammerError: You did something wrong: Root Cause
+    at Object.<anonymous> (/Users/You/my-file.js:4:18)
+    at Module._compile (node:internal/modules/cjs/loader:1103:14)
+    at Object.Module._extensions..js (node:internal/modules/cjs/loader:1155:10)
+caused by:
+Error: Root Cause
+    at Object.<anonymous> (/Users/You/my-file.js:3:18)
+    at Module._compile (node:internal/modules/cjs/loader:1103:14)
+    at Object.Module._extensions..js (node:internal/modules/cjs/loader:1155:10)
+*/
+```
 
 ### getMergedInfo()
+Take any Error or "Error like" object and return the merged `.info` property from each one.
+
+`getMergedInfo(err)`
+
+parameter name | description | type | required | default
+---------------|-------------|------|----------|---------
+err | Any Error object | Error | yes | none
+
+```js
+const { getMergedInfo, OperationalError } = require('kixx-server-errors');
+
+const nativeError = new Error('Plain error');
+
+const operror1 = new OperationalError('Wrapper 1', {
+  err: nativeError,
+  info: { foo: 1, two: 'y' }
+});
+
+const operror2 = new OperationalError('Wrapper 2', {
+  err: operror1,
+  info: { foo: 2, one: 'z' }
+});
+
+const operror3 = new OperationalError('Wrapper 3', {
+  err: operror2,
+  info: { foo: 3, three: 'x' }
+});
+
+const info = getMergedInfo(operror3);
+
+// The most recent error takes precedent.
+assert.isEqual(3, info.foo);
+assert.isEqual('x', info.three);
+assert.isEqual('y', info.two);
+assert.isEqual('z', info.one);
+```
 
 ### getHttpError()
+Take any Error or "Error like" object and return the causal error with a `.statusCode` property which is closest to the top level (most recent). Return null if none is found.
+
+`getHttpError(err)`
+
+parameter name | description | type | required | default
+---------------|-------------|------|----------|---------
+err | Any Error object | Error | yes | none
+
+```js
+const { getHttpError, BadRequestError, ValidationError } = require('kixx-server-errors');
+
+const error1 = new ValidationError('Invalid input');
+
+// Use the ValidationError push() feature.
+error1.push('Username is invalid', 'username', 'foobar');
+
+const error2 = new BadRequestError('Invalid request parameters', { err: error1 });
+
+const err = getHttpError(error2);
+
+// Send status 400 from BadRequestError
+res.status(err.statusCode).send(JSON.stringify({ error: { name: err.name, detail: err.detail }}));
+```
 
 ## Copyright and License
 Copyright: (c) 2018 - 2022 by Kris Walker (www.kixx.name)
