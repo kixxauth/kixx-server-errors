@@ -1,19 +1,70 @@
 'use strict';
 
-const BadRequestError = require('./lib/bad-request-error');
-const ConflictError = require('./lib/conflict-error');
-const ForbiddenError = require('./lib/forbidden-error');
-const JsonParsingError = require('./lib/json-parsing-error');
-const MethodNotAllowedError = require('./lib/method-not-allowed-error');
-const NotAcceptableError = require('./lib/not-acceptable-error');
-const NotFoundError = require('./lib/not-found-error');
-const NotImplementedError = require('./lib/not-implemented-error');
-const StackedError = require('./lib/stacked-error');
-const UnauthorizedError = require('./lib/unauthorized-error');
-const UnprocessableError = require('./lib/unprocessable-error');
-const UnsupportedMediaTypeError = require('./lib/unsupported-media-type-error');
-const UserError = require('./lib/user-error');
-const ValidationError = require('./lib/validation-error');
+const { EOL } = require('os');
+
+const BadRequestError = require('./lib/errors/bad-request-error');
+const ConflictError = require('./lib/errors/conflict-error');
+const ForbiddenError = require('./lib/errors/forbidden-error');
+const JsonParsingError = require('./lib/errors/json-parsing-error');
+const MethodNotAllowedError = require('./lib/errors/method-not-allowed-error');
+const NotAcceptableError = require('./lib/errors/not-acceptable-error');
+const NotFoundError = require('./lib/errors/not-found-error');
+const NotImplementedError = require('./lib/errors/not-implemented-error');
+const OperationalError = require('./lib/errors/operational-error');
+const ProgrammerError = require('./lib/errors/programmer-error');
+const UnauthorizedError = require('./lib/errors/unauthorized-error');
+const UnprocessableError = require('./lib/errors/unprocessable-error');
+const UnsupportedMediaTypeError = require('./lib/errors/unsupported-media-type-error');
+const ValidationError = require('./lib/errors/validation-error');
+
+
+function getFullStack(err) {
+	let errors = err ? [ err ] : [];
+
+	if (err && Array.isArray(err.errors)) {
+		errors = errors.concat(err.errors);
+	}
+
+	if (errors.length === 0) {
+		return 'Null or undefined error';
+	}
+
+	return errors.map((e) => {
+		const stack = e && e.stack;
+		return stack || 'No stack trace';
+	}).join(`${ EOL }caused by:${ EOL }`);
+}
+
+function getMergedInfo(err) {
+	let errors = err ? [ err ] : [];
+
+	if (err && Array.isArray(err.errors)) {
+		errors = errors.concat(err.errors);
+	}
+
+	return errors.reverse().reduce((info, e) => {
+		const inf = e && e.info;
+		return Object.assign(info, inf || {});
+	}, {});
+}
+
+function getHttpError(err) {
+	let errors = err ? [ err ] : [];
+
+	if (err && Array.isArray(err.errors)) {
+		errors = errors.concat(err.errors);
+	}
+
+	// Search through the errors list from most recent to oldest.
+	for (let i = 0; i < errors.length; i = i + 1) {
+		const e = errors[i];
+		if (e && e.statusCode) {
+			return e;
+		}
+	}
+
+	return null;
+}
 
 exports.BadRequestError = BadRequestError;
 exports.ConflictError = ConflictError;
@@ -23,83 +74,13 @@ exports.MethodNotAllowedError = MethodNotAllowedError;
 exports.NotAcceptableError = NotAcceptableError;
 exports.NotFoundError = NotFoundError;
 exports.NotImplementedError = NotImplementedError;
-exports.StackedError = StackedError;
+exports.OperationalError = OperationalError;
+exports.ProgrammerError = ProgrammerError;
 exports.UnauthorizedError = UnauthorizedError;
 exports.UnprocessableError = UnprocessableError;
 exports.UnsupportedMediaTypeError = UnsupportedMediaTypeError;
-exports.UserError = UserError;
 exports.ValidationError = ValidationError;
 
-
-function getFullStack(err) {
-	if (typeof err.getFullStack === 'function') {
-		return err.getFullStack();
-	}
-	return err.stack || 'No stack trace.';
-}
 exports.getFullStack = getFullStack;
-
-function includesErrorCode(err, code) {
-	if (typeof err.includesErrorCode === 'function') {
-		return err.includesErrorCode(code);
-	}
-
-	let errors = [err];
-	if (Array.isArray(err)) {
-		errors = err;
-	}
-	if (Array.isArray(err.errors)) {
-		errors = errors.concat(err.errors);
-	}
-
-	for (let i = 0; i < errors.length; i++) {
-		if (errors[i] && errors[i].code === code) {
-			return code;
-		}
-	}
-	return false;
-}
-exports.includesErrorCode = includesErrorCode;
-
-function getOperationalError(err) {
-	if (typeof err.getOperationalError === 'function') {
-		return err.getOperationalError();
-	}
-
-	let errors = [err];
-	if (Array.isArray(err)) {
-		errors = err;
-	}
-	if (Array.isArray(err.errors)) {
-		errors = errors.concat(err.errors);
-	}
-
-	for (let i = errors.length - 1; i >= 0; i--) {
-		const e = errors[i];
-		if (e && (typeof e.code === 'string' || typeof e.code === 'number')) {
-			return e;
-		}
-	}
-	return err;
-}
-exports.getOperationalError = getOperationalError;
-
-function getHttpError(err) {
-	let errors = [err];
-	if (Array.isArray(err)) {
-		errors = err;
-	}
-	if (Array.isArray(err.errors)) {
-		errors = errors.concat(err.errors);
-	}
-
-	for (let i = errors.length - 1; i >= 0; i--) {
-		const e = errors[i];
-		if (e && e.statusCode) {
-			return e;
-		}
-	}
-
-	return null;
-}
+exports.getMergedInfo = getMergedInfo;
 exports.getHttpError = getHttpError;
