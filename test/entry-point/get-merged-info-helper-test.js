@@ -5,6 +5,7 @@ const { assert } = require('kixx-assert');
 const { getMergedInfo } = require('../../index');
 
 module.exports = function runTests(t) {
+
 	t.it('will handle null or undefined input', () => {
 		const res = getMergedInfo(null);
 		assert.isEqual('object', typeof res);
@@ -25,11 +26,10 @@ module.exports = function runTests(t) {
 	t.it('merges error info from the errors list', () => {
 		const err = {
 			info: { foo: 3, three: 'x' },
-			errors: [
-				{ info: { foo: 2, one: 'z' } },
-				{},
-				{ info: { foo: 1, two: 'y' } },
-			],
+			cause: {
+				info: { foo: 2, one: 'z' },
+				cause: { cause: { info: { foo: 1, two: 'y' } } },
+			},
 		};
 
 		const info = getMergedInfo(err);

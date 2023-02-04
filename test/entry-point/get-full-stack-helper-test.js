@@ -18,10 +18,7 @@ module.exports = function runTests(t) {
 
 		stack = getFullStack({
 			stack: 'Foo',
-			errors: [
-				{},
-				{ stack: 'Bar' },
-			],
+			cause: { cause: { stack: 'Bar' } },
 		});
 
 		const lines = stack.split(EOL);
@@ -41,10 +38,10 @@ module.exports = function runTests(t) {
 	t.it('will handle an error with a history', () => {
 		const stack = getFullStack({
 			stack: 'Foo',
-			errors: [
-				{ stack: 'Bar' },
-				{ stack: 'Baz' },
-			],
+			cause: {
+				stack: 'Bar',
+				cause: { stack: 'Baz' },
+			},
 		});
 
 		const lines = stack.split(EOL);

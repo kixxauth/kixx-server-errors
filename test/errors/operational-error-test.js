@@ -3,12 +3,11 @@
 const { assert } = require('kixx-assert');
 const { EOL } = require('os');
 
-const ErrorClass = require('../../lib/errors/unprocessable-error');
+const ErrorClass = require('../../lib/errors/operational-error');
 
-const ERROR_NAME = 'UnprocessableError';
-const ERROR_CODE = 'UNPROCESSABLE_ERROR';
-const ERROR_TITLE = 'Unprocessable Entity';
-const ERROR_STATUS_CODE = 422;
+const ERROR_NAME = 'OperationalError';
+const ERROR_CODE = 'OPERATIONAL_ERROR';
+const ERROR_TITLE = 'Operational Error';
 
 module.exports = function runTest(t) {
 	t.it('should be an instance of an Error', () => {
@@ -54,8 +53,7 @@ module.exports = function runTest(t) {
 
 	t.it('should have correct statusCode', () => {
 		const err = new ErrorClass('Foo bar baz.');
-		assert.isEqual(ERROR_STATUS_CODE, ErrorClass.STATUS_CODE);
-		assert.isEqual(ErrorClass.STATUS_CODE, err.statusCode);
+		assert.isUndefined(err.statusCode);
 	});
 
 	t.it('should have correct message with NO root errors', () => {
@@ -69,7 +67,6 @@ module.exports = function runTest(t) {
 		const err = new ErrorClass('Baz', { cause: secondError });
 		assert.isEqual('Baz', err.message);
 	});
-
 
 	t.it('should have correct "fatal" flag', () => {
 		let err = new ErrorClass('Foo');
@@ -86,7 +83,7 @@ module.exports = function runTest(t) {
 		const firstLines = err.stack.split(EOL).slice(0, 2);
 
 		assert.isEqual(`${ ERROR_NAME }: Baz`, firstLines[0]);
-		assert.isOk(firstLines[1].includes('test/errors/unprocessable-error-test.js:'));
+		assert.isOk(firstLines[1].includes('test/errors/operational-error-test.js:'));
 	});
 
 	t.it('should have a detail property', () => {

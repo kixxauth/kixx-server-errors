@@ -88,8 +88,7 @@ function readConfigFile(callback) {
   fs.readFile('/etc/my-server/config.inf', function (err, res) {
     if (err) {
       const wrappedError = new OperationalError('Failed reading config file', {
-        err,
-        location: 'configLoader:readFile',
+        cause: err,
         info: {
           path: '/etc/my-server/config.inf',
           syscall: err.syscall
@@ -112,11 +111,9 @@ readConfigFile(function (err, res) {
 
     // Notice the message is the combined message from the root cause Error and
     // the wrapping OperationalError.
-    assert.isEqual("Failed reading config file: ENOENT: no such file or directory, open '/etc/my-server/config.inf'", err.message);
     assert.isEqual("OperationalErrror: Failed reading config file => Error: ENOENT: no such file or directory, open '/etc/my-server/config.inf'", err.detail)
 
     // The error is annotated with other helpful information.
-    assert.isEqual('configLoader:readFile', err.location);
     assert.isEqual('/etc/my-server/config.inf', err.info.path);
     assert.isEqual('open', err.info.syscall);
 
@@ -177,11 +174,10 @@ OperationalError: Optional specification properties:
 
 prop name | description | type | default
 ----------|-------------|------|--------
-spec.err | The cause error to wrap | Error or subclass of Error | `null`
+spec.cause | The cause error to wrap | Error or subclass of Error | `null`
 spec.code | Assign the error code property instead of the default | String or Number | `OperationalError.CODE`
 spec.title | Assign the error title property instead of the default | String | `OperationalError.TITLE`
 spec.fatal | Assign the error fatal property instead of the default | Boolean | `false`
-spec.location | Assign the error location property instead of the default | String | `undefined`
 spec.info | Use as the error info object | Object | `{}`
 
 OperationalError: Instance properties:
@@ -193,9 +189,7 @@ message | The composed message property from this error and all causal errors | 
 code | Will be spec.code or `OperationalError.CODE` | String
 title | Will be spec.title or `OperationalError.TITLE` | String
 detail | The composed name:message from all causal errors | String
-errors | An imutable list of causal errors | Array
 fatal | Will be spec.fatal or `false` | Boolean
-location | Will be spec.location or `undefined` | String or undefined
 info | Will be spec.info or an empty object | Object
 
 ### getFullStack()
@@ -270,37 +264,7 @@ assert.isEqual('y', info.two);
 assert.isEqual('z', info.one);
 ```
 
-### getHttpError()
-Take any Error or "Error like" object and return the causal error with a `.statusCode` property which is closest to the top level (most recent). Return null if none is found.
-
-`getHttpError(err)`
-
-parameter | description | type | required | default
-----------|-------------|------|----------|---------
-err | Any Error object | Error | yes | none
-
-```js
-const { getHttpError, BadRequestError, ValidationError } = require('kixx-server-errors');
-
-const error1 = new ValidationError('Invalid input');
-
-// Use the ValidationError push() feature.
-error1.push('Username is invalid', 'username', 'foobar');
-
-const error2 = new BadRequestError('Invalid request parameters', { err: error1 });
-
-const err = getHttpError(error2);
-
-// Send status 400 from BadRequestError
-res
-  .status(err.statusCode)
-  .sendJSON(JSON.stringify({ error: {
-    name: err.name,
-    detail: err.detail
-  }}));
-```
-
 ## Copyright and License
-Copyright: (c) 2018 - 2022 by Kris Walker <kris@kixx.name>
+Copyright: (c) 2018 - 2023 by Kris Walker (www.kriswalker.me)
 
 Unless otherwise indicated, all source code is licensed under the MIT license. See MIT-LICENSE for details.

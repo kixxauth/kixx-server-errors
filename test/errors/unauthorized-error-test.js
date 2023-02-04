@@ -65,26 +65,9 @@ module.exports = function runTest(t) {
 
 	t.it('should have correct message WITH root errors', () => {
 		const firstError = new Error('Foo');
-		const secondError = new ErrorClass('Bar', { err: firstError });
-		const err = new ErrorClass('Baz', { err: secondError });
-		assert.isEqual('Baz: Bar: Foo', err.message);
-	});
-
-	t.it('should have correct detail with NO root errors', () => {
-		const err = new ErrorClass('Foo bar baz');
-		assert.isEqual(`${ ERROR_NAME }: Foo bar baz`, err.detail);
-	});
-
-	t.it('should have correct detail WITH root errors', () => {
-		const firstError = new Error('Foo');
-		const secondError = new ErrorClass('Bar', { err: firstError });
-		const err = new ErrorClass('Baz', { err: secondError });
-		assert.isEqual(`${ ERROR_NAME }: Baz: Bar: Foo >> ${ ERROR_NAME }: Bar: Foo >> Error: Foo`, err.detail);
-	});
-
-	t.it('should have location when provided', () => {
-		const err = new ErrorClass('Foo bar baz', { location: 'some:component:location' });
-		assert.isEqual('some:component:location', err.location);
+		const secondError = new ErrorClass('Bar', { cause: firstError });
+		const err = new ErrorClass('Baz', { cause: secondError });
+		assert.isEqual('Baz', err.message);
 	});
 
 	t.it('should have correct "fatal" flag', () => {
@@ -96,12 +79,20 @@ module.exports = function runTest(t) {
 
 	t.it('should have a stack trace', () => {
 		const firstError = new Error('Foo');
-		const secondError = new ErrorClass('Bar', { err: firstError });
-		const err = new ErrorClass('Baz', { err: secondError });
+		const secondError = new ErrorClass('Bar', { cause: firstError });
+		const err = new ErrorClass('Baz', { cause: secondError });
 
 		const firstLines = err.stack.split(EOL).slice(0, 2);
 
-		assert.isEqual(`${ ERROR_NAME }: Baz: Bar: Foo`, firstLines[0]);
+		assert.isEqual(`${ ERROR_NAME }: Baz`, firstLines[0]);
 		assert.isOk(firstLines[1].includes('test/errors/unauthorized-error-test.js:'));
+	});
+
+	t.it('should have a detail property', () => {
+		const firstError = new Error('Foo');
+		const secondError = new ErrorClass('Bar', { cause: firstError });
+		const err = new ErrorClass('Baz', { cause: secondError });
+
+		assert.isEqual(`${ ERROR_NAME }: Baz => ${ ERROR_NAME }: Bar => Error: Foo`, err.detail);
 	});
 };

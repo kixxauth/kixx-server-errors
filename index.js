@@ -19,51 +19,49 @@ const ValidationError = require('./lib/errors/validation-error');
 
 
 function getFullStack(err) {
-	let errors = err ? [ err ] : [];
-
-	if (err && Array.isArray(err.errors)) {
-		errors = errors.concat(err.errors);
-	}
-
-	if (errors.length === 0) {
+	if (!err) {
 		return 'Null or undefined error';
 	}
 
-	return errors.map((e) => {
-		const stack = e && e.stack;
-		return stack || 'No stack trace';
-	}).join(`${ EOL }caused by:${ EOL }`);
-}
+	const stack = [];
 
-function getMergedInfo(err) {
-	let errors = err ? [ err ] : [];
+	function recursivelyConcat(cause) {
+		if (cause && cause.stack) {
+			stack.push(cause.stack);
+		} else if (typeof cause === 'string') {
+			stack.push(cause);
+		} else {
+			stack.push('No stack trace');
+		}
 
-	if (err && Array.isArray(err.errors)) {
-		errors = errors.concat(err.errors);
-	}
-
-	return errors.reverse().reduce((info, e) => {
-		const inf = e && e.info;
-		return Object.assign(info, inf || {});
-	}, {});
-}
-
-function getHttpError(err) {
-	let errors = err ? [ err ] : [];
-
-	if (err && Array.isArray(err.errors)) {
-		errors = errors.concat(err.errors);
-	}
-
-	// Search through the errors list from most recent to oldest.
-	for (let i = 0; i < errors.length; i = i + 1) {
-		const e = errors[i];
-		if (e && e.statusCode) {
-			return e;
+		if (cause && cause.cause) {
+			recursivelyConcat(cause.cause);
 		}
 	}
 
-	return null;
+	recursivelyConcat(err);
+
+	return stack.join(`${ EOL }caused by:${ EOL }`);
+}
+
+function getMergedInfo(err) {
+	const objects = [];
+
+	function recursivelyCollectInfo(cause) {
+		if (cause && typeof cause.info === 'object' && !Array.isArray(cause.info)) {
+			objects.push(cause.info);
+		}
+
+		if (cause && cause.cause) {
+			recursivelyCollectInfo(cause.cause);
+		}
+	}
+
+	recursivelyCollectInfo(err);
+
+	return objects.reverse().reduce((info, obj) => {
+		return Object.assign(info, obj);
+	}, {});
 }
 
 exports.BadRequestError = BadRequestError;
@@ -83,4 +81,3 @@ exports.ValidationError = ValidationError;
 
 exports.getFullStack = getFullStack;
 exports.getMergedInfo = getMergedInfo;
-exports.getHttpError = getHttpError;
