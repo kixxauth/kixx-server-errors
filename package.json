@@ -1,13 +1,13 @@
 {
   "name": "kixx-server-errors",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "description": "Common use case ECMAScript error classes",
   "main": "index.js",
   "scripts": {
     "test": "eslint ./ && kixx-test-node",
     "lint": "eslint ./"
   },
-  "author": "Kris Walker <kris@kixx.name>",
+  "author": "Kris Walker (kriswalker.me)",
   "license": "MIT",
   "repository": {
     "type": "git",
