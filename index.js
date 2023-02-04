@@ -64,6 +64,26 @@ function getMergedInfo(err) {
 	}, {});
 }
 
+function isProgrammerError(err) {
+	function recursivelyCheckCause(cause) {
+		if (cause instanceof ProgrammerError || cause.name === ProgrammerError.NAME) {
+			return true;
+		}
+
+		if (cause.cause) {
+			return recursivelyCheckCause(cause.cause);
+		}
+
+		return false;
+	}
+
+	if (err) {
+		return recursivelyCheckCause(err);
+	}
+
+	return false;
+}
+
 exports.BadRequestError = BadRequestError;
 exports.ConflictError = ConflictError;
 exports.ForbiddenError = ForbiddenError;
@@ -81,3 +101,4 @@ exports.ValidationError = ValidationError;
 
 exports.getFullStack = getFullStack;
 exports.getMergedInfo = getMergedInfo;
+exports.isProgrammerError = isProgrammerError;

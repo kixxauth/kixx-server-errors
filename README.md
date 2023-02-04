@@ -149,7 +149,7 @@ __Helpers__
 
 - [getFullStack()](#getfullstack)
 - [getMergedInfo()](#getmergedinfo)
-- [getHttpError()](#gethttperror)
+- [isProgrammerError()](#isprogrammererror)
 
 ### OperationalError
 Use for wrapping low level operational errors like ENOENT and ECONNREFUSED.
@@ -263,6 +263,13 @@ assert.isEqual('x', info.three);
 assert.isEqual('y', info.two);
 assert.isEqual('z', info.one);
 ```
+
+### isProgrammerError()
+Take an Error or "Error like" object and determine if the given error or any nested causes are ProgrammerErrors. Will detect instances of ProgrammerError or any error with the name 'ProgrammerError'.
+
+parameter | description | type | required | default
+----------|-------------|------|----------|---------
+err  | Any Error object | Error | yes | none
 
 ## Copyright and License
 Copyright: (c) 2018 - 2023 by Kris Walker (www.kriswalker.me)
