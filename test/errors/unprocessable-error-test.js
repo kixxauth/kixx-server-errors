@@ -94,6 +94,6 @@ module.exports = function runTest(t) {
 		const secondError = new ErrorClass('Bar', { cause: firstError });
 		const err = new ErrorClass('Baz', { cause: secondError });
 
-		assert.isEqual(`${ ERROR_NAME }: Baz => ${ ERROR_NAME }: Bar => Error: Foo`, err.detail);
+		assert.isEqual(`${ ERROR_NAME } ${ ERROR_CODE } Baz => ${ ERROR_NAME } ${ ERROR_CODE } Bar => Error Foo`, err.detail);
 	});
 };
