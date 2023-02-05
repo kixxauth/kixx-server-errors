@@ -1,6 +1,6 @@
 {
   "name": "kixx-server-errors",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "description": "Common use case ECMAScript error classes",
   "main": "index.js",
   "scripts": {
@@ -24,6 +24,7 @@
   },
   "files": [
       "/README.md",
+      "/MIT-LICENSE",
       "/index.js",
       "/lib"
   ]
