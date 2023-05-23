@@ -7,7 +7,7 @@
     "test": "eslint ./ && kixx-test-node",
     "lint": "eslint ./"
   },
-  "author": "Kris Walker (kriswalker.me)",
+  "author": "Kris Walker (www.kriswalker.me)",
   "license": "MIT",
   "repository": {
     "type": "git",

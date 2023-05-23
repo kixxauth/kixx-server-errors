@@ -2,6 +2,8 @@ Kixx Server Errors
 ==================
 Common use case ECMAScript error classes for Node.js. Includes stackable errors and error handling utilties for better error handling in asychronous situations.
 
+Created by [Kris Walker](https://www.kriswalker.me) 2017 - 2023.
+
 Inspired by [node-verror](https://github.com/TritonDataCenter/node-verror) and the corresponding [blog post](https://www.tritondatacenter.com/node-js/production/design/errors).
 
 ## Table of Contents
