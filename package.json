@@ -1,6 +1,6 @@
 {
   "name": "kixx-server-errors",
-  "version": "4.0.0",
+  "version": "4.0.2",
   "description": "Common use case ECMAScript error classes",
   "main": "index.js",
   "scripts": {
@@ -21,5 +21,11 @@
     "eslint": "8.22.0",
     "kixx-assert": "~1.0.6",
     "kixx-test-node": "~1.4.3"
-  }
+  },
+  "files": [
+      "/README.md",
+      "/MIT-LICENSE",
+      "/index.js",
+      "/lib"
+  ]
 }
