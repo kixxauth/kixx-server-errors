@@ -1,6 +1,6 @@
 # ConflictError
 
-A 409 Conflict error class that indicates the request conflicts with the current state of the server.
+An error class which represents an HTTP 409 Conflict.
 
 ## Properties
 
@@ -19,42 +19,22 @@ Inherits all properties from `WrappedError` with the following defaults:
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `message` | string | The error message describing the conflict |
-| `options` | object | Optional configuration object |
+| `options` | object | Optional configuration object including [cause](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/cause) |
 | `sourceFunction` | function | Optional function where the error occurred |
 
 ### Options Object
-
-Inherits all options from `WrappedError` with the following defaults:
-
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
 | `expected` | boolean | true | Whether the error was expected |
 | `httpError` | boolean | true | Whether this is an HTTP error |
-| `httpStatusCode` | number | 409 | HTTP status code |
+| `httpStatusCode` | number | 409 | The HTTP status code |
+| `cause` | Error | null | The underlying error cause. See [MDN Error:cause](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/cause) |
 
 ## Usage
 
 ```javascript
-import { ConflictError } from './mod.js';
+import { ConflictError } from 'kixx-server-errors';
 
 // Basic usage
 throw new ConflictError('Resource already exists');
-
-// With custom options
-throw new ConflictError('Email address already in use', {
-    expected: false,
-    sourceFunction: 'createUser',
-    originalError: dbError
-});
-
-// With source function
-throw new ConflictError('Version conflict detected', {}, checkVersion);
 ```
-
-## Best Practices
-
-1. Use descriptive error messages that explain the nature of the conflict
-2. Include details about the conflicting resource when possible
-3. Set `expected` to `false` for unexpected conflicts
-4. Include the original error when wrapping other errors
-5. Use the source function parameter to help with debugging 

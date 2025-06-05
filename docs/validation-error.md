@@ -11,14 +11,10 @@ Inherits all properties from `WrappedError` with the following defaults:
 | `name` | 'ValidationError' | The name of the error class |
 | `code` | 'VALIDATION_ERROR' | The error code |
 | `httpError` | true | Indicates this is an HTTP error |
-| `httpStatusCode` | 400 | The HTTP status code |
+| `httpStatusCode` | 422 | The HTTP status code |
 | `expected` | true | Indicates this is an expected error |
-
-### Additional Properties
-
-| Property | Type | Description |
-|----------|------|-------------|
-| `details` | object | Object containing validation error details for each field |
+| `length` | 0 | The number of validation objects pushed onto this ValidationError |
+| `errors` | Array | validation objects pushed onto this ValidationError |
 
 ## Constructor Parameters
 
@@ -35,41 +31,30 @@ Inherits all options from `WrappedError` with the following defaults:
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
 | `expected` | boolean | true | Whether the error was expected |
+| `cause` | Error | null | The underlying error cause. See [MDN Error:cause](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/cause) |
 | `httpError` | boolean | true | Whether this is an HTTP error |
-| `httpStatusCode` | number | 400 | HTTP status code |
-| `details` | object | {} | Validation error details |
+| `httpStatusCode` | number | 422 | HTTP status code |
 
 ## Usage
 
 ```javascript
-import { ValidationError } from './mod.js';
+import { ValidationError } from 'kixx-server-errors';
 
-// Basic usage with validation details
-throw new ValidationError('Invalid user data', {
-    details: {
-        email: 'Invalid email format',
-        age: 'Must be over 18',
-        password: 'Password must be at least 8 characters'
-    }
-});
+function validateForm(formData) {
+    const error = new ValidationError('Invalid form data');
 
-// With custom options and source function
-throw new ValidationError('Form validation failed', {
-    expected: false,
-    sourceFunction: 'validateUserForm',
-    details: {
-        username: 'Username is required',
-        password: 'Password is too short'
+    if (!formData.email || typeof formData.email !== 'string') {
+        error.push('Invalid email', 'form.email');
     }
-}, validateForm);
+    if (!formData.name || typeof formData.name !== 'string') {
+        error.push('Invalid name', 'form.name');
+    }
+
+    // If we pushed any validation failures, then throw the error.
+    if (error.length > 0) {
+        throw error;
+    }
+
+    return formData;
+}
 ```
-
-## Best Practices
-
-1. Always include validation details in the `details` object
-2. Use descriptive error messages for each field
-3. Group related validation errors together
-4. Include the source function when possible
-5. Set `expected` to `false` for unexpected validation errors
-6. Use consistent error message formats across your application
-7. Consider using a validation library (like Joi or Yup) and converting its errors to `ValidationError` 

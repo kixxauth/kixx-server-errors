@@ -1,6 +1,6 @@
 # OperationalError
 
-A base error class for operational errors that can be handled by the application.
+A base error class for expectd operational errors that can be handled by the application.
 
 ## Properties
 
@@ -18,7 +18,7 @@ Inherits all properties from `WrappedError` with the following defaults:
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `message` | string | The error message describing the operational error |
-| `options` | object | Optional configuration object |
+| `options` | object | Optional configuration object including [cause](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/cause) |
 | `sourceFunction` | function | Optional function where the error occurred |
 
 ### Options Object
@@ -28,6 +28,7 @@ Inherits all options from `WrappedError` with the following defaults:
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
 | `expected` | boolean | true | Whether the error was expected |
+| `cause` | Error | null | The underlying error cause. See [MDN Error:cause](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/cause) |
 | `httpError` | boolean | false | Whether this is an HTTP error |
 
 ## Usage
@@ -37,23 +38,4 @@ import { OperationalError } from './mod.js';
 
 // Basic usage
 throw new OperationalError('Operation failed');
-
-// With custom options
-throw new OperationalError('Database operation failed', {
-    expected: false,
-    sourceFunction: 'saveData',
-    originalError: dbError
-});
-
-// With source function
-throw new OperationalError('Processing failed', {}, processData);
 ```
-
-## Best Practices
-
-1. Use descriptive error messages that explain what operation failed
-2. Include relevant operation details in the error message
-3. Set `expected` to `false` for unexpected operational errors
-4. Include the original error when wrapping other errors
-5. Use the source function parameter to help with debugging
-6. Consider providing recovery steps or alternative operations 

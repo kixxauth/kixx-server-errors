@@ -19,7 +19,7 @@ Inherits all properties from `WrappedError` with the following defaults:
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `message` | string | The error message describing why the response is not acceptable |
-| `options` | object | Optional configuration object |
+| `options` | object | Optional configuration object including [cause](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/cause) |
 | `sourceFunction` | function | Optional function where the error occurred |
 
 ### Options Object
@@ -31,34 +31,16 @@ Inherits all options from `WrappedError` with the following defaults:
 | `expected` | boolean | true | Whether the error was expected |
 | `httpError` | boolean | true | Whether this is an HTTP error |
 | `httpStatusCode` | number | 406 | HTTP status code |
-| `acceptedTypes` | string[] | [] | List of accepted content types |
+| `accept` | string[] | [] | List of accepted content types |
+| `acceptEncoding` | string[] | [] | List of accepted encodings |
+| `acceptLanguage` | string[] | [] | List of accepted languages |
 
 ## Usage
 
 ```javascript
-import { NotAcceptableError } from './mod.js';
+import { NotAcceptableError } from 'kixx-server-errors';
 
-// Basic usage
-throw new NotAcceptableError('Response format not acceptable');
-
-// With custom options
 throw new NotAcceptableError('Content type not supported', {
-    expected: false,
-    sourceFunction: 'handleRequest',
     acceptedTypes: ['application/json', 'application/xml']
 });
-
-// With source function
-throw new NotAcceptableError('Language not supported', {
-    acceptedTypes: ['en-US', 'en-GB', 'fr-FR']
-}, validateAcceptLanguage);
 ```
-
-## Best Practices
-
-1. Use descriptive error messages that explain why the response is not acceptable
-2. Always include the `acceptedTypes` array in the options
-3. Set `expected` to `false` for unexpected content type issues
-4. Include the original error when wrapping other errors
-5. Use the source function parameter to help with debugging
-6. Consider providing guidance on which types are accepted 

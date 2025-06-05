@@ -1,6 +1,6 @@
 # ForbiddenError
 
-A 403 Forbidden error class that indicates the server understood the request but refuses to authorize it.
+An error class which represents an HTTP 400 Bad Request which indicates the server understood the request but refuses to authorize it.
 
 ## Properties
 
@@ -19,36 +19,24 @@ Inherits all properties from `WrappedError` with the following defaults:
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `message` | string | The error message describing why access is forbidden |
-| `options` | object | Optional configuration object |
+| `options` | object | Optional configuration object including [cause](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/cause) |
 | `sourceFunction` | function | Optional function where the error occurred |
 
 ### Options Object
-
-Inherits all options from `WrappedError` with the following defaults:
-
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
 | `expected` | boolean | true | Whether the error was expected |
 | `httpError` | boolean | true | Whether this is an HTTP error |
-| `httpStatusCode` | number | 403 | HTTP status code |
+| `httpStatusCode` | number | 403 | The HTTP status code |
+| `cause` | Error | null | The underlying error cause. See [MDN Error:cause](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/cause) |
 
 ## Usage
 
 ```javascript
-import { ForbiddenError } from './mod.js';
+import { ForbiddenError } from 'kixx-server-errors';
 
 // Basic usage
 throw new ForbiddenError('Access denied');
-
-// With custom options
-throw new ForbiddenError('Insufficient permissions', {
-    expected: false,
-    sourceFunction: 'checkPermissions',
-    originalError: authError
-});
-
-// With source function
-throw new ForbiddenError('Resource access restricted', {}, checkAccess);
 ```
 
 ## Best Practices

@@ -11,14 +11,14 @@ Inherits all properties from `WrappedError` with the following defaults:
 | `name` | 'AssertionError' | The name of the error class |
 | `code` | 'ASSERTION_ERROR' | The error code |
 | `httpError` | false | Indicates this is not an HTTP error |
-| `expected` | true | Indicates this is an expected error |
+| `expected` | false | Indicates this is an expected error |
 
 ## Constructor Parameters
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `message` | string | The error message describing the assertion failure |
-| `options` | object | Optional configuration object |
+| `options` | object | Optional configuration object including [cause](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/cause) |
 | `sourceFunction` | function | Optional function where the error occurred |
 
 ### Options Object
@@ -27,33 +27,22 @@ Inherits all options from `WrappedError` with the following defaults:
 
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
-| `expected` | boolean | true | Whether the error was expected |
+| `expected` | boolean | false | Whether the error was expected |
 | `httpError` | boolean | false | Whether this is an HTTP error |
+| `cause` | Error | null | The underlying error cause. See [MDN Error:cause](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/cause) |
 
 ## Usage
 
 ```javascript
-import { AssertionError } from './mod.js';
+import { AssertionError } from 'kixx-server-errors';
 
-// Basic usage
-throw new AssertionError('Condition not met');
+async function saveJSONDocument(name, doc) {
+    if (!doc?.id) {
+        throw new AssertionError('A document must have an "id"');
+    }
 
-// With custom options
-throw new AssertionError('Value out of range', {
-    expected: false,
-    sourceFunction: 'validateRange',
-    originalError: rangeError
-});
-
-// With source function
-throw new AssertionError('Invalid state', {}, checkState);
+    const filepath = path.join(directory, name);
+    const json = JSON.stringify(doc);
+    await fsp.writeFile(filepath, json, { encoding: 'utf8' });
+}
 ```
-
-## Best Practices
-
-1. Use descriptive error messages that explain what condition failed
-2. Include the expected and actual values in the error message when relevant
-3. Set `expected` to `false` for unexpected assertion failures
-4. Include the original error when wrapping other errors
-5. Use the source function parameter to help with debugging
-6. Consider providing guidance on how to fix the assertion failure 

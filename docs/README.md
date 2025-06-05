@@ -1,12 +1,17 @@
-# Kixx Server Errors
-
-A collection of standardized error classes for Node.js applications, providing consistent error handling and HTTP status code mapping.
-
 ## Overview
-
 This library provides a set of error classes that extend the native `Error` class, with additional properties and standardized behavior for HTTP error responses. All error classes inherit from `WrappedError`, which provides common functionality for error handling.
 
 ## Error Classes
+See the documentation files in this directory for more information.
+
+### Special Error Classes
+
+| Error Class | Description |
+|-------------|-------------|
+| `AssertionError` | Used for assertion failures in application code or tests |
+| `OperationalError` | Base class for operational errors (expected errors) |
+| `ValidationError` | Used for data validation failures |
+| `WrappedError` | Base class for all error classes in this library |
 
 ### HTTP Error Classes
 
@@ -23,56 +28,44 @@ This library provides a set of error classes that extend the native `Error` clas
 | `UnsupportedMediaTypeError` | 415 | The server refuses to accept the request because the payload format is unsupported |
 | `NotImplementedError` | 501 | The server does not support the functionality required to fulfill the request |
 
-### Special Error Classes
-
-| Error Class | Description |
-|-------------|-------------|
-| `AssertionError` | Used for assertion failures in tests |
-| `OperationalError` | Base class for operational errors (expected errors) |
-| `ValidationError` | Used for data validation failures |
-| `WrappedError` | Base class for all error classes in this library |
-
 ## Usage
 
 ```javascript
-import { BadRequestError, ValidationError } from './mod.js';
+import { WrappedError, BadRequestError, OperationalError } from './mod.js';
 
-// Create a bad request error
-throw new BadRequestError('Invalid input parameters');
+throw new BadRequestError('Invalid JSON payload');
 
-// Create a validation error with details
-throw new ValidationError('Invalid user data', {
-    details: {
-        email: 'Invalid email format',
-        age: 'Must be over 18'
+async function safelyReadTextFile(filepath) {
+    let utf8;
+    try {
+        utf8 = await fsp.readFile(filepath, { encoding: utf8 });
+    } catch (cause) {
+        if (cause.code === 'ENOENT') {
+            // The file does not exist.
+            // The default .expected property is true for an OperationalError.
+            throw new OperationalError(
+                `File does not exist at ${ filepath }`,
+                { code: 'FILE_NOT_FOUND', cause }
+            );
+        } else {
+            // We don't know what happened in this case.
+            // The default .expected property is false for a WrappedError.
+            throw new WrappedError(
+                `Unexpected error reading file from ${ filepath }`,
+                { cause }
+            );
+        }
     }
-});
+}
 ```
 
 ## Common Properties
 
-All error classes inherit the following properties from `WrappedError`:
+All error classes inherit the following properties from `WrappedError`, but usually override some or all of them:
 
 - `name`: The name of the error class
 - `code`: A unique error code string
 - `message`: The error message
-- `expected`: Boolean indicating if the error was expected (default: true)
-- `httpError`: Boolean indicating if this is an HTTP error (default: true for HTTP errors)
+- `expected`: Boolean indicating if the error was expected (default: false)
 - `httpStatusCode`: The HTTP status code (for HTTP errors)
-- `sourceFunction`: The function where the error occurred
-- `sourceFile`: The file where the error occurred
-- `sourceLine`: The line number where the error occurred
-- `sourceColumn`: The column number where the error occurred
-- `sourceCode`: The code snippet where the error occurred
-- `sourceStack`: The stack trace
-- `originalError`: The original error that caused this error
-
-## Installation
-
-```bash
-npm install kixx-server-errors
-```
-
-## License
-
-MIT 
+- `httpError`: Boolean indicating if this is an HTTP error (default: true for HTTP errors)

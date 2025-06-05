@@ -19,7 +19,7 @@ Inherits all properties from `WrappedError` with the following defaults:
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `message` | string | The error message describing what is not implemented |
-| `options` | object | Optional configuration object |
+| `options` | object | Optional configuration object including [cause](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/cause) |
 | `sourceFunction` | function | Optional function where the error occurred |
 
 ### Options Object
@@ -29,33 +29,15 @@ Inherits all options from `WrappedError` with the following defaults:
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
 | `expected` | boolean | true | Whether the error was expected |
+| `cause` | Error | null | The underlying error cause. See [MDN Error:cause](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/cause) |
 | `httpError` | boolean | true | Whether this is an HTTP error |
 | `httpStatusCode` | number | 501 | HTTP status code |
 
 ## Usage
 
 ```javascript
-import { NotImplementedError } from './mod.js';
+import { NotImplementedError } from 'kixx-server-errors';
 
 // Basic usage
 throw new NotImplementedError('Feature not implemented');
-
-// With custom options
-throw new NotImplementedError('Method not implemented', {
-    expected: false,
-    sourceFunction: 'processPayment',
-    originalError: paymentError
-});
-
-// With source function
-throw new NotImplementedError('Operation not implemented', {}, performOperation);
 ```
-
-## Best Practices
-
-1. Use descriptive error messages that specify what functionality is not implemented
-2. Include the feature or method name in the error message
-3. Set `expected` to `false` for unexpected implementation errors
-4. Include the original error when wrapping other errors
-5. Use the source function parameter to help with debugging
-6. Consider providing information about when the feature might be implemented 

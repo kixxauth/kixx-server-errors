@@ -29,33 +29,20 @@ Inherits all options from `WrappedError` with the following defaults:
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
 | `expected` | boolean | true | Whether the error was expected |
+| `cause` | Error | null | The underlying error cause. See [MDN Error:cause](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/cause) |
 | `httpError` | boolean | true | Whether this is an HTTP error |
 | `httpStatusCode` | number | 415 | HTTP status code |
+| `accept` | string[] | [] | List of accepted content types |
+| `acceptEncoding` | string[] | [] | List of accepted encodings |
+| `acceptLanguage` | string[] | [] | List of accepted languages |
 
 ## Usage
 
 ```javascript
-import { UnsupportedMediaTypeError } from './mod.js';
+import { UnsupportedMediaTypeError } from 'kixx-server-errors';
 
 // Basic usage
-throw new UnsupportedMediaTypeError('Unsupported media type');
-
-// With custom options
-throw new UnsupportedMediaTypeError('Invalid content type', {
-    expected: false,
-    sourceFunction: 'validateContentType',
-    originalError: contentTypeError
+throw new UnsupportedMediaTypeError('Unsupported media type', {
+    acceptEncoding: ['gzip']
 });
-
-// With source function
-throw new UnsupportedMediaTypeError('Format not supported', {}, processRequest);
 ```
-
-## Best Practices
-
-1. Use descriptive error messages that specify the unsupported media type
-2. Include the expected media types in the error message
-3. Set `expected` to `false` for unexpected media type errors
-4. Include the original error when wrapping other errors
-5. Use the source function parameter to help with debugging
-6. Consider providing guidance on supported media types 

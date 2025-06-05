@@ -1,6 +1,6 @@
 # UnauthenticatedError
 
-A 401 Unauthorized error class that indicates the request lacks valid authentication credentials.
+A 401 Unauthorized error class that indicates the request lacks valid authentication credentials. This class is different from UnauthorizedError to differentiate between authentication (AuthN) and authorization (AuthZ) errors.
 
 ## Properties
 
@@ -29,33 +29,15 @@ Inherits all options from `WrappedError` with the following defaults:
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
 | `expected` | boolean | true | Whether the error was expected |
+| `cause` | Error | null | The underlying error cause. See [MDN Error:cause](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/cause) |
 | `httpError` | boolean | true | Whether this is an HTTP error |
 | `httpStatusCode` | number | 401 | HTTP status code |
 
 ## Usage
 
 ```javascript
-import { UnauthenticatedError } from './mod.js';
+import { UnauthenticatedError } from 'kixx-server-errors';
 
 // Basic usage
 throw new UnauthenticatedError('Authentication required');
-
-// With custom options
-throw new UnauthenticatedError('Invalid credentials', {
-    expected: false,
-    sourceFunction: 'validateToken',
-    originalError: authError
-});
-
-// With source function
-throw new UnauthenticatedError('Session expired', {}, checkSession);
 ```
-
-## Best Practices
-
-1. Use descriptive error messages that explain why authentication failed
-2. Include specific authentication details in the error message when appropriate
-3. Set `expected` to `false` for unexpected authentication errors
-4. Include the original error when wrapping other errors
-5. Use the source function parameter to help with debugging
-6. Consider providing guidance on how to authenticate properly 

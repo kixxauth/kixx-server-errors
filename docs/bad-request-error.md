@@ -1,6 +1,6 @@
 # BadRequestError
 
-A 400 Bad Request error class that indicates the server cannot process the request due to client error.
+An error class which represents an HTTP 400 Bad Request.
 
 ## Properties
 
@@ -19,42 +19,22 @@ Inherits all properties from `WrappedError` with the following defaults:
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `message` | string | The error message describing the bad request |
-| `options` | object | Optional configuration object |
+| `options` | object | Optional configuration object including [cause](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/cause) |
 | `sourceFunction` | function | Optional function where the error occurred |
 
 ### Options Object
-
-Inherits all options from `WrappedError` with the following defaults:
-
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
 | `expected` | boolean | true | Whether the error was expected |
 | `httpError` | boolean | true | Whether this is an HTTP error |
-| `httpStatusCode` | number | 400 | HTTP status code |
+| `httpStatusCode` | number | 400 | The HTTP status code |
+| `cause` | Error | null | The underlying error cause. See [MDN Error:cause](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/cause) |
 
 ## Usage
 
 ```javascript
-import { BadRequestError } from './mod.js';
+import { BadRequestError } from 'kixx-server-errors';
 
 // Basic usage
-throw new BadRequestError('Invalid input parameters');
-
-// With custom options
-throw new BadRequestError('Invalid JSON payload', {
-    expected: false,
-    sourceFunction: 'parseRequestBody',
-    originalError: jsonError
-});
-
-// With source function
-throw new BadRequestError('Missing required fields', {}, validateRequest);
+throw new BadRequestError('Invalid JSON payload');
 ```
-
-## Best Practices
-
-1. Use descriptive error messages that help the client understand what went wrong
-2. Include validation details when appropriate
-3. Set `expected` to `false` for unexpected client errors
-4. Include the original error when wrapping other errors
-5. Use the source function parameter to help with debugging 

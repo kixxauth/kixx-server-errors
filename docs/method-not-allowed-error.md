@@ -19,7 +19,7 @@ Inherits all properties from `WrappedError` with the following defaults:
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `message` | string | The error message describing the method not allowed |
-| `options` | object | Optional configuration object |
+| `options` | object | Optional configuration object including allowedMethods |
 | `sourceFunction` | function | Optional function where the error occurred |
 
 ### Options Object
@@ -33,32 +33,15 @@ Inherits all options from `WrappedError` with the following defaults:
 | `httpStatusCode` | number | 405 | HTTP status code |
 | `allowedMethods` | string[] | [] | List of allowed HTTP methods |
 
+The `allowedMethods` Array will be present on the error instance as `error.allowedMethods`.
+
 ## Usage
 
 ```javascript
 import { MethodNotAllowedError } from './mod.js';
 
 // Basic usage
-throw new MethodNotAllowedError('Method not allowed');
-
-// With custom options
-throw new MethodNotAllowedError('PUT method not supported', {
-    expected: false,
-    sourceFunction: 'handleRequest',
-    allowedMethods: ['GET', 'POST']
+throw new MethodNotAllowedError('Method not allowed', {
+    allowedMethods: ['GET','HEAD']
 });
-
-// With source function
-throw new MethodNotAllowedError('DELETE not allowed for this resource', {
-    allowedMethods: ['GET', 'POST', 'PUT']
-}, validateMethod);
 ```
-
-## Best Practices
-
-1. Use descriptive error messages that explain why the method is not allowed
-2. Always include the `allowedMethods` array in the options
-3. Set `expected` to `false` for unexpected method issues
-4. Include the original error when wrapping other errors
-5. Use the source function parameter to help with debugging
-6. Consider providing guidance on which methods are allowed 
