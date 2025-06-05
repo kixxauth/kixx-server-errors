@@ -1,7 +1,7 @@
 import { describe } from 'kixx-test';
 import { assert, assertEqual, assertNotEqual } from 'kixx-assert';
 import sinon from 'sinon';
-import UnsupportedMediaTypeError from '../lib/unsupported-media-type-error.js';
+import { UnsupportedMediaTypeError } from '../mod.js';
 
 describe('UnsupportedMediaTypeError', ({ it, describe }) => { // eslint-disable-line no-shadow
 

@@ -1,7 +1,7 @@
 import { describe } from 'kixx-test';
 import { assert, assertEqual } from 'kixx-assert';
 import sinon from 'sinon';
-import ConflictError from '../lib/conflict-error.js';
+import { ConflictError } from '../mod.js';
 
 describe('ConflictError', ({ it, describe }) => { // eslint-disable-line no-shadow
 

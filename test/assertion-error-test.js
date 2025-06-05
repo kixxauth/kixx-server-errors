@@ -1,7 +1,7 @@
 import { describe } from 'kixx-test';
 import { assert, assertEqual } from 'kixx-assert';
 import sinon from 'sinon';
-import AssertionError from '../lib/assertion-error.js';
+import { AssertionError } from '../mod.js';
 
 describe('AssertionError', ({ it, describe }) => { // eslint-disable-line no-shadow
 

@@ -1,7 +1,7 @@
 import { describe } from 'kixx-test';
 import { assert, assertEqual } from 'kixx-assert';
 import sinon from 'sinon';
-import BadRequestError from '../lib/bad-request-error.js';
+import { BadRequestError } from '../mod.js';
 
 describe('BadRequestError', ({ it, describe }) => { // eslint-disable-line no-shadow
 

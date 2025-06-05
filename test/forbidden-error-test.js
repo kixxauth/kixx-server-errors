@@ -1,7 +1,7 @@
 import { describe } from 'kixx-test';
 import { assert, assertEqual } from 'kixx-assert';
 import sinon from 'sinon';
-import ForbiddenError from '../lib/forbidden-error.js';
+import { ForbiddenError } from '../mod.js';
 
 describe('ForbiddenError', ({ it, describe }) => { // eslint-disable-line no-shadow
 

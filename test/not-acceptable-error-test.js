@@ -1,7 +1,7 @@
 import { describe } from 'kixx-test';
 import { assert, assertEqual, assertNotEqual } from 'kixx-assert';
 import sinon from 'sinon';
-import NotAcceptableError from '../lib/not-acceptable-error.js';
+import { NotAcceptableError } from '../mod.js';
 
 describe('NotAcceptableError', ({ it, describe }) => { // eslint-disable-line no-shadow
 

@@ -1,7 +1,7 @@
 import { describe } from 'kixx-test';
 import { assert, assertEqual } from 'kixx-assert';
 import sinon from 'sinon';
-import ValidationError from '../lib/validation-error.js';
+import { ValidationError } from '../mod.js';
 
 describe('ValidationError', ({ it, describe }) => { // eslint-disable-line no-shadow
 

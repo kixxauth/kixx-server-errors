@@ -1,7 +1,7 @@
 import { describe } from 'kixx-test';
 import { assert, assertEqual } from 'kixx-assert';
 import sinon from 'sinon';
-import WrappedError from '../lib/wrapped-error.js';
+import { WrappedError } from '../mod.js';
 
 describe('WrappedError', ({ it, describe }) => { // eslint-disable-line no-shadow
 
