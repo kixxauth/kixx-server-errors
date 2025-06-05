@@ -1,31 +1,38 @@
 {
   "name": "kixx-server-errors",
-  "version": "4.0.2",
-  "description": "Common use case ECMAScript error classes",
-  "main": "index.js",
+  "version": "5.0.0",
+  "description": "Common use case ECMAScript error classes for server side JavaScript applicataions",
+  "type": "module",
+  "main": "mod.js",
+  "engines": {
+    "node": ">=16.13.2"
+  },
   "scripts": {
-    "test": "eslint ./ && kixx-test-node",
+    "test": "eslint ./ && node ./test/run-tests.js",
     "lint": "eslint ./"
   },
-  "author": "Kris Walker (www.kriswalker.me)",
-  "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kixxauth/kixx-server-errors.git"
+    "url": "git+https://github.com/kixxauth/kixx-test.git"
   },
+  "files": [
+    "lib/",
+    "mod.js"
+  ],
+  "devDependencies": {
+    "@eslint/js": "9.27.0",
+    "eslint": "9.27.0",
+    "kixx-assert": "2.0.1",
+    "kixx-test": "2.0.0",
+    "sinon": "20.0.0"
+  },
+  "keywords": [
+    "errors"
+  ],
+  "author": "Kris Walker (www.kriswalker.me)",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/kixxauth/kixx-server-errors/issues"
   },
-  "homepage": "https://github.com/kixxauth/kixx-server-errors#readme",
-  "devDependencies": {
-    "eslint": "8.22.0",
-    "kixx-assert": "~1.0.6",
-    "kixx-test-node": "~1.4.3"
-  },
-  "files": [
-      "/README.md",
-      "/MIT-LICENSE",
-      "/index.js",
-      "/lib"
-  ]
+  "homepage": "https://github.com/kixxauth/kixx-server-errors#readme"
 }
