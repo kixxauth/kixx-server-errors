@@ -14,7 +14,8 @@ describe('ValidationError', ({ it, describe }) => { // eslint-disable-line no-sh
         assertEqual(err.cause, cause);
     });
 
-    describe('with defaults', () => {
+    // eslint-disable-next-line no-shadow
+    describe('with defaults', ({ it }) => {
         it('has the default .name property', () => {
             const err = new ValidationError('test message');
             assertEqual(err.name, 'ValidationError');
@@ -50,7 +51,8 @@ describe('ValidationError', ({ it, describe }) => { // eslint-disable-line no-sh
         });
     });
 
-    describe('with custom options', () => {
+    // eslint-disable-next-line no-shadow
+    describe('with custom options', ({ it }) => {
         it('accepts a custom name', () => {
             const err = new ValidationError('test message', { name: 'CustomError' });
             assertEqual(err.name, 'CustomError');
@@ -87,7 +89,8 @@ describe('ValidationError', ({ it, describe }) => { // eslint-disable-line no-sh
         });
     });
 
-    describe('error collection', () => {
+    // eslint-disable-next-line no-shadow
+    describe('error collection', ({ it }) => {
         it('allows pushing validation errors', () => {
             const err = new ValidationError('test message');
             err.push('Invalid email', 'user.email');

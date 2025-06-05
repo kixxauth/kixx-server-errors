@@ -14,7 +14,8 @@ describe('BadRequestError', ({ it, describe }) => { // eslint-disable-line no-sh
         assertEqual(cause, err.cause);
     });
 
-    describe('with defaults', () => {
+    // eslint-disable-next-line no-shadow
+    describe('with defaults', ({ it }) => {
         it('has the default .name property', () => {
             const err = new BadRequestError('test message');
             assertEqual('BadRequestError', err.name);
@@ -44,7 +45,8 @@ describe('BadRequestError', ({ it, describe }) => { // eslint-disable-line no-sh
         });
     });
 
-    describe('with custom options', () => {
+    // eslint-disable-next-line no-shadow
+    describe('with custom options', ({ it }) => {
         it('accepts a custom name', () => {
             const err = new BadRequestError('test message', { name: 'CustomError' });
             assertEqual('CustomError', err.name);

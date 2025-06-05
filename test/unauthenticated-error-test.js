@@ -14,7 +14,8 @@ describe('UnauthenticatedError', ({ it, describe }) => { // eslint-disable-line 
         assertEqual(cause, err.cause);
     });
 
-    describe('with defaults', () => {
+    // eslint-disable-next-line no-shadow
+    describe('with defaults', ({ it }) => {
         it('has the default .name property', () => {
             const err = new UnauthenticatedError('test message');
             assertEqual('UnauthenticatedError', err.name);
@@ -44,7 +45,8 @@ describe('UnauthenticatedError', ({ it, describe }) => { // eslint-disable-line 
         });
     });
 
-    describe('with custom options', () => {
+    // eslint-disable-next-line no-shadow
+    describe('with custom options', ({ it }) => {
         it('accepts a custom name', () => {
             const err = new UnauthenticatedError('test message', { name: 'CustomError' });
             assertEqual('CustomError', err.name);

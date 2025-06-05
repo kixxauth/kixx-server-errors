@@ -14,7 +14,8 @@ describe('WrappedError', ({ it, describe }) => { // eslint-disable-line no-shado
         assertEqual(cause, err.cause);
     });
 
-    describe('with defaults', () => {
+    // eslint-disable-next-line no-shadow
+    describe('with defaults', ({ it }) => {
         it('has the default .name property', () => {
             const err = new WrappedError('test message');
             assertEqual('WrappedError', err.name);
@@ -43,7 +44,8 @@ describe('WrappedError', ({ it, describe }) => { // eslint-disable-line no-shado
         });
     });
 
-    describe('with custom options', () => {
+    // eslint-disable-next-line no-shadow
+    describe('with custom options', ({ it }) => {
         it('accepts a custom name', () => {
             const err = new WrappedError('test message', { name: 'CustomError' });
             assertEqual('CustomError', err.name);

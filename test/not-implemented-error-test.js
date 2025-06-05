@@ -14,7 +14,8 @@ describe('NotImplementedError', ({ it, describe }) => { // eslint-disable-line n
         assertEqual(cause, err.cause);
     });
 
-    describe('with defaults', () => {
+    // eslint-disable-next-line no-shadow
+    describe('with defaults', ({ it }) => {
         it('has the default .name property', () => {
             const err = new NotImplementedError('test message');
             assertEqual('NotImplementedError', err.name);
@@ -44,7 +45,8 @@ describe('NotImplementedError', ({ it, describe }) => { // eslint-disable-line n
         });
     });
 
-    describe('with custom options', () => {
+    // eslint-disable-next-line no-shadow
+    describe('with custom options', ({ it }) => {
         it('accepts a custom name', () => {
             const err = new NotImplementedError('test message', { name: 'CustomError' });
             assertEqual('CustomError', err.name);

@@ -14,7 +14,8 @@ describe('AssertionError', ({ it, describe }) => { // eslint-disable-line no-sha
         assertEqual(cause, err.cause);
     });
 
-    describe('with defaults', () => {
+    // eslint-disable-next-line no-shadow
+    describe('with defaults', ({ it }) => {
         it('has the default .name property', () => {
             const err = new AssertionError('test message');
             assertEqual('AssertionError', err.name);
@@ -43,7 +44,8 @@ describe('AssertionError', ({ it, describe }) => { // eslint-disable-line no-sha
         });
     });
 
-    describe('with custom options', () => {
+    // eslint-disable-next-line no-shadow
+    describe('with custom options', ({ it }) => {
         it('accepts a custom name', () => {
             const err = new AssertionError('test message', { name: 'CustomError' });
             assertEqual('CustomError', err.name);

@@ -14,7 +14,8 @@ describe('OperationalError', ({ it, describe }) => { // eslint-disable-line no-s
         assertEqual(cause, err.cause);
     });
 
-    describe('with defaults', () => {
+    // eslint-disable-next-line no-shadow
+    describe('with defaults', ({ it }) => {
         it('has the default .name property', () => {
             const err = new OperationalError('test message');
             assertEqual('OperationalError', err.name);
@@ -43,7 +44,8 @@ describe('OperationalError', ({ it, describe }) => { // eslint-disable-line no-s
         });
     });
 
-    describe('with custom options', () => {
+    // eslint-disable-next-line no-shadow
+    describe('with custom options', ({ it }) => {
         it('accepts a custom name', () => {
             const err = new OperationalError('test message', { name: 'CustomError' });
             assertEqual('CustomError', err.name);

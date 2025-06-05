@@ -14,7 +14,8 @@ describe('UnsupportedMediaTypeError', ({ it, describe }) => { // eslint-disable-
         assertEqual(cause, err.cause);
     });
 
-    describe('with defaults', () => {
+    // eslint-disable-next-line no-shadow
+    describe('with defaults', ({ it }) => {
         it('has the default .name property', () => {
             const err = new UnsupportedMediaTypeError('test message');
             assertEqual('UnsupportedMediaTypeError', err.name);
@@ -44,7 +45,8 @@ describe('UnsupportedMediaTypeError', ({ it, describe }) => { // eslint-disable-
         });
     });
 
-    describe('with custom options', () => {
+    // eslint-disable-next-line no-shadow
+    describe('with custom options', ({ it }) => {
         it('accepts a custom name', () => {
             const err = new UnsupportedMediaTypeError('test message', { name: 'CustomError' });
             assertEqual('CustomError', err.name);
