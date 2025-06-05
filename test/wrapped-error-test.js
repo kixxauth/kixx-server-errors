@@ -10,55 +10,59 @@ describe('WrappedError', ({ it, describe }) => { // eslint-disable-line no-shado
         const err = new WrappedError('test message', { cause });
         assert(err instanceof Error);
         assert(err instanceof WrappedError);
-        assertEqual(err.message, 'test message');
-        assertEqual(err.cause, cause);
+        assertEqual('test message', err.message);
+        assertEqual(cause, err.cause);
     });
 
     describe('with defaults', () => {
         it('has the default .name property', () => {
             const err = new WrappedError('test message');
-            assertEqual(err.name, 'WrappedError');
+            assertEqual('WrappedError', err.name);
             assertEqual(WrappedError.name, err.name);
         });
+
         it('has the default .code property', () => {
             const err = new WrappedError('test message');
-            assertEqual(err.code, 'WRAPPED_ERROR');
+            assertEqual('WRAPPED_ERROR', err.code);
             assertEqual(WrappedError.CODE, err.code);
         });
+
         it('has the default .httpStatusCode property', () => {
             const err = new WrappedError('test message');
             assertEqual('undefined', typeof err.httpStatusCode);
         });
+
         it('has the default .expected property', () => {
             const err = new WrappedError('test message');
-            assertEqual(err.expected, false);
+            assertEqual(false, err.expected);
         });
+
         it('has the default .httpError property', () => {
             const err = new WrappedError('test message');
-            assertEqual(err.httpError, false);
+            assertEqual(false, err.httpError);
         });
     });
 
     describe('with custom options', () => {
         it('accepts a custom name', () => {
             const err = new WrappedError('test message', { name: 'CustomError' });
-            assertEqual(err.name, 'CustomError');
+            assertEqual('CustomError', err.name);
         });
 
         it('accepts a custom code', () => {
             const err = new WrappedError('test message', { code: 'CUSTOM_ERROR_CODE' });
-            assertEqual(err.code, 'CUSTOM_ERROR_CODE');
+            assertEqual('CUSTOM_ERROR_CODE', err.code);
         });
 
         it('accepts a custom httpStatusCode', () => {
             const err = new WrappedError('test message', { httpStatusCode: 418 });
-            assertEqual(err.httpStatusCode, 418);
-            assertEqual(err.httpError, true);
+            assertEqual(418, err.httpStatusCode);
+            assertEqual(true, err.httpError);
         });
 
         it('accepts a custom expected flag', () => {
             const err = new WrappedError('test message', { expected: true });
-            assertEqual(err.expected, true);
+            assertEqual(true, err.expected);
         });
 
         it('accepts multiple custom options simultaneously', () => {
@@ -68,11 +72,11 @@ describe('WrappedError', ({ it, describe }) => { // eslint-disable-line no-shado
                 httpStatusCode: 418,
                 expected: true,
             });
-            assertEqual(err.name, 'CustomError');
-            assertEqual(err.code, 'CUSTOM_ERROR_CODE');
-            assertEqual(err.httpStatusCode, 418);
-            assertEqual(err.expected, true);
-            assertEqual(err.httpError, true);
+            assertEqual('CustomError', err.name);
+            assertEqual('CUSTOM_ERROR_CODE', err.code);
+            assertEqual(418, err.httpStatusCode);
+            assertEqual(true, err.expected);
+            assertEqual(true, err.httpError);
         });
     });
 
