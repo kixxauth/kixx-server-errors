@@ -1,5 +1,5 @@
 import { describe } from 'kixx-test';
-import { assert, assertEqual } from 'kixx-assert';
+import { assert, assertEqual, assertNotEqual } from 'kixx-assert';
 import sinon from 'sinon';
 import UnsupportedMediaTypeError from '../lib/unsupported-media-type-error.js';
 
@@ -80,6 +80,94 @@ describe('UnsupportedMediaTypeError', ({ it, describe }) => { // eslint-disable-
             assertEqual(418, err.httpStatusCode);
             assertEqual(false, err.expected);
             assertEqual(true, err.httpError);
+        });
+    });
+
+    // eslint-disable-next-line no-shadow
+    describe('with accept', ({ it }) => {
+        it('has an empty array by default', () => {
+            const err = new UnsupportedMediaTypeError('test message');
+            assert(Array.isArray(err.accept));
+            assertEqual(0, err.accept.length);
+        });
+
+        it('accepts an array of accept values', () => {
+            const accept = [ 'application/json', 'text/html' ];
+            const err = new UnsupportedMediaTypeError('test message', { accept });
+            assert(Array.isArray(err.accept));
+            assertEqual(2, err.accept.length);
+            assertEqual('application/json', err.accept[0]);
+            assertEqual('text/html', err.accept[1]);
+        });
+
+        it('makes a copy of the accept array', () => {
+            const accept = [ 'application/json', 'text/html' ];
+            const err = new UnsupportedMediaTypeError('test message', { accept });
+            assertNotEqual(accept, err.accept);
+        });
+
+        it('freezes the accept array', () => {
+            const accept = [ 'application/json', 'text/html' ];
+            const err = new UnsupportedMediaTypeError('test message', { accept });
+            assert(Object.isFrozen(err.accept));
+        });
+    });
+
+    // eslint-disable-next-line no-shadow
+    describe('with acceptEncoding', ({ it }) => {
+        it('has an empty array by default', () => {
+            const err = new UnsupportedMediaTypeError('test message');
+            assert(Array.isArray(err.acceptEncoding));
+            assertEqual(0, err.acceptEncoding.length);
+        });
+
+        it('accepts an array of acceptEncoding values', () => {
+            const acceptEncoding = [ 'gzip', 'deflate' ];
+            const err = new UnsupportedMediaTypeError('test message', { acceptEncoding });
+            assert(Array.isArray(err.acceptEncoding));
+            assertEqual(2, err.acceptEncoding.length);
+            assertEqual('gzip', err.acceptEncoding[0]);
+            assertEqual('deflate', err.acceptEncoding[1]);
+        });
+
+        it('makes a copy of the acceptEncoding array', () => {
+            const acceptEncoding = [ 'gzip', 'deflate' ];
+            const err = new UnsupportedMediaTypeError('test message', { acceptEncoding });
+            assertNotEqual(acceptEncoding, err.acceptEncoding);
+        });
+
+        it('freezes the acceptEncoding array', () => {
+            const acceptEncoding = [ 'gzip', 'deflate' ];
+            const err = new UnsupportedMediaTypeError('test message', { acceptEncoding });
+            assert(Object.isFrozen(err.acceptEncoding));
+        });
+    });
+
+    // eslint-disable-next-line no-shadow
+    describe('with acceptLanguage', ({ it }) => {
+        it('has an empty array by default', () => {
+            const err = new UnsupportedMediaTypeError('test message');
+            assert(Array.isArray(err.acceptLanguage));
+            assertEqual(0, err.acceptLanguage.length);
+        });
+
+        it('accepts an array of acceptLanguage values', () => {
+            const acceptLanguage = [ 'en-US', 'en-GB' ];
+            const err = new UnsupportedMediaTypeError('test message', { acceptLanguage });
+            assert(Array.isArray(err.acceptLanguage));
+            assertEqual(2, err.acceptLanguage.length);
+        });
+
+        it('makes a copy of the acceptLanguage array', () => {
+            const acceptLanguage = [ 'en-US', 'en-GB' ];
+            const err = new UnsupportedMediaTypeError('test message', { acceptLanguage });
+            assertNotEqual(acceptLanguage, err.acceptLanguage);
+        });
+
+        it('freezes the acceptLanguage array', () => {
+            const acceptLanguage = [ 'en-US', 'en-GB' ];
+            const err = new UnsupportedMediaTypeError('test message', { acceptLanguage });
+            assert(Object.isFrozen(err.acceptLanguage));
         });
     });
 
