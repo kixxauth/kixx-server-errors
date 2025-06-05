@@ -1,10 +1,33 @@
 Kixx Server Errors
 ==================
-Common use case ECMAScript error classes for Node.js. Includes stackable errors and error handling utilties for better error handling in asychronous situations.
+Common use case ECMAScript error classes for HTTP application servers built with JavaScript (Node.js, Deno, etc). Includes stackable errors and error handling utilties for better error handling in asychronous situations.
 
-Created by [Kris Walker](https://www.kriswalker.me) 2017 - 2023.
+Created by [Kris Walker](https://www.kriswalker.me) 2017 - 2025.
 
 Inspired by [node-verror](https://github.com/TritonDataCenter/node-verror) and the corresponding [blog post](https://www.tritondatacenter.com/node-js/production/design/errors).
+
+Environment Support
+-------------------
+
+| Env     | Version    |
+|---------|------------|
+| ECMA    | >= ES2022  |
+| Node.js | >= 16.13.2 |
+| Deno    | >= 1.0.0   |
+
+This library is designed for use in an ES6 module environment requiring __Node.js >= 16.13.2__ or __Deno >= 1.0.0__. You could use it in a browser, but there are no plans to offer CommonJS or AMD modules. It targets at least [ES2022](https://node.green/#ES2022) and uses the optional chaining operator `?.`.
+
+If you're curious: Node.js >= 16.13.2 is required for [ES6 module stabilization](https://nodejs.org/dist/latest-v18.x/docs/api/esm.html#modules-ecmascript-modules) and [ES2022 support](https://node.green/#ES2020).
+
+__Note:__ There is no TypeScript here. It would be waste of time for a library as small as this.
+
+Ethos
+-----
+Kixx Server Errors exists to meet 3 goals for better error handling in server-side JavaScript:
+
+1. Make it easy to differentiate between unexpected errors and expected operational errors.
+2. Provide a mechanism to augment error information as it is caught and rethrown with the added context from each layer.
+3. Throw errors with specific HTTP application constructs which can help formulate an appropriate HTTP response to clients.
 
 ## Table of Contents
 
@@ -22,7 +45,7 @@ There are 3 main design goals of kixx-server-errors:
 3. __It also needs to be easy to compose Errors:__ higher-level code should be able to augment the Errors reported by lower-level code to provide a more complete description of what happened. Instead of saying "connection refused", you can say "operation X failed: connection refused".
 
 ## Ethos
-The KIXX Server Errors ethos is provided by excerpts from this great blog post on [error handling in Node.js](https://www.tritondatacenter.com/node-js/production/design/errors). Reprinted here for posterity:
+The Kixx Errors ethos is provided by excerpts from this great blog post on [error handling in Node.js](https://www.tritondatacenter.com/node-js/production/design/errors). Reprinted here for posterity:
 
 ## Operational errors vs. programmer errors
 It’s helpful to divide all errors into two broad categories:
@@ -273,7 +296,8 @@ parameter | description | type | required | default
 ----------|-------------|------|----------|---------
 err  | Any Error object | Error | yes | none
 
-## Copyright and License
-Copyright: (c) 2018 - 2023 by Kris Walker (www.kriswalker.me)
+Copyright and License
+---------------------
+Copyright: (c) 2018 - 2025 by Kris Walker (www.kriswalker.me)
 
-Unless otherwise indicated, all source code is licensed under the MIT license. See MIT-LICENSE for details.
+Unless otherwise indicated, all source code is licensed under the MIT license. See LICENSE for details.
