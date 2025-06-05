@@ -1,5 +1,5 @@
 import { describe } from 'kixx-test';
-import { assert, assertEqual } from 'kixx-assert';
+import { assert, assertEqual, assertNotEqual } from 'kixx-assert';
 import sinon from 'sinon';
 import MethodNotAllowedError from '../lib/method-not-allowed-error.js';
 
@@ -14,7 +14,8 @@ describe('MethodNotAllowedError', ({ it, describe }) => { // eslint-disable-line
         assertEqual(cause, err.cause);
     });
 
-    describe('with defaults', () => {
+    // eslint-disable-next-line no-shadow
+    describe('with defaults', ({ it }) => {
         it('has the default .name property', () => {
             const err = new MethodNotAllowedError('test message');
             assertEqual('MethodNotAllowedError', err.name);
@@ -44,7 +45,38 @@ describe('MethodNotAllowedError', ({ it, describe }) => { // eslint-disable-line
         });
     });
 
-    describe('with custom options', () => {
+    // eslint-disable-next-line no-shadow
+    describe('with allowed methods', ({ it }) => {
+        it('has an empty array by default', () => {
+            const err = new MethodNotAllowedError('test message');
+            assert(Array.isArray(err.allowedMethods));
+            assertEqual(0, err.allowedMethods.length);
+        });
+
+        it('accepts an array of allowed methods', () => {
+            const allowedMethods = [ 'GET', 'POST' ];
+            const err = new MethodNotAllowedError('test message', { allowedMethods });
+            assert(Array.isArray(err.allowedMethods));
+            assertEqual(2, err.allowedMethods.length);
+            assertEqual('GET', err.allowedMethods[0]);
+            assertEqual('POST', err.allowedMethods[1]);
+        });
+
+        it('makes a copy of the allowed methods array', () => {
+            const allowedMethods = [ 'GET', 'POST' ];
+            const err = new MethodNotAllowedError('test message', { allowedMethods });
+            assertNotEqual(allowedMethods, err.allowedMethods);
+        });
+
+        it('freezes the allowed methods array', () => {
+            const allowedMethods = [ 'GET', 'POST' ];
+            const err = new MethodNotAllowedError('test message', { allowedMethods });
+            assert(Object.isFrozen(err.allowedMethods));
+        });
+    });
+
+    // eslint-disable-next-line no-shadow
+    describe('with custom options', ({ it }) => {
         it('accepts a custom name', () => {
             const err = new MethodNotAllowedError('test message', { name: 'CustomError' });
             assertEqual('CustomError', err.name);
